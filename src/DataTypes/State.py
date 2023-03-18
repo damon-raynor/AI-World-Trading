@@ -21,3 +21,7 @@ class State(object):
 
    def __repr__(self) -> str:
       return self.NAME
+
+   def evaluate_EU():
+      return
+   

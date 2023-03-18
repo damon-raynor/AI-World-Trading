@@ -24,3 +24,6 @@ class Node(object):
 
    def __hash__(self) -> int:
       return hash(self.ID)
+
+   def identify_potential_states_based_on_feasible_action ():
+      return
