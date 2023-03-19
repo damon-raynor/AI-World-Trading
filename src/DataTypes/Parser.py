@@ -1,7 +1,8 @@
 # CREDIT FOR THIS FILE GOES TO JOHN FORD!
+# Modified for the TransformTemplate dataclass inputs and outputs to expect to be in the form of a dict
 
 # Standard Libraries
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 import os
 import re
 from typing import List
@@ -14,12 +15,12 @@ class ResourceQuantity:
 @dataclass
 class TransformTemplate:
     name: str = field(default="")
-    inputs: List[ResourceQuantity] = field(default_factory=list)
-    outputs: List[ResourceQuantity] = field(default_factory=list)
+    inputs: dict = field(default_factory=dict)
+    outputs: dict = field(default_factory=dict)
 
 def read_file(file_path: str) -> List[dict]:
     file_contents = None
-    with open(file_path, mode='r') as file:
+    with open(file_path, mode='r', encoding="utf-8-sig") as file:
       file_contents = file.read()
     return file_contents
 
@@ -49,13 +50,13 @@ def validate(template: str = ""):
       raise Exception("Missing required keywords, verify transform is syntactically correct")
 
 def build_resource_quantities(resource_quantities_block):
-    quantities = []
+    quantities = {}
 
     regex = r"\(([A-Za-z]+) (\d)\)"
     matches = re.finditer(regex, resource_quantities_block, re.MULTILINE)
     for match in matches:
           resource_name, resource_quantity = match.groups()
-          quantities.append(ResourceQuantity(name=resource_name, quantity=int(resource_quantity)))
+          quantities[resource_name] = int(resource_quantity)
 
     return quantities
 

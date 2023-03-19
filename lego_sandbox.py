@@ -8,14 +8,25 @@ output_schedule_filename = 'sandbox_output_scheduler'
 depth_bound = 5
 frontier_max_size = 15
 
-#perform parsing
-resources = HelperFunctions.read_csv(resource_filename)
-print(resources)
-# # import initial state
-# initial_state = HelperFunctions.read_csv(initial_state_filename)
+# create transform rule templates
+action_preconditions = {'metallicAlloys': Parser.parse('alloys.tmpl'),
+                     'housing': Parser.parse('housing.tmpl'),
+                     'electronics': Parser.parse('electronics.tmpl')}
 
-# #Create Implicit Graph
-# implicit_search = ImplicitGraph(Node(initial_state, None, None), depth_bound)
+# print(action_preconditions['metallicAlloys'])
+
+# perform parsing: import resource weights from .csv file
+resource_weights = HelperFunctions.read_resources(resource_filename)
+print(resource_weights)
+
+# perform parsing: import initial state from .csv file
+initial_state = HelperFunctions.read_initial_state(initial_state_filename)
+# print(initial_state)
+
+#Create Implicit Graph. first argument is the root node created using the initial state.
+implicit_search = ImplicitGraph(Node(initial_state, None, None), depth_bound, action_preconditions)
+
+# determine the next actions I can take
 
 # solution1 = implicit_search.search(search_strategy)
 

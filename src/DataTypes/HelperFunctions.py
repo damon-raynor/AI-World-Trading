@@ -7,7 +7,7 @@ from math import exp, prod
 # Credit to John Ford
 def read_csv(file_path: str) -> List[dict]:
     entries = []
-    with open(file_path, mode='r') as file:
+    with open(file_path, mode='r', encoding="utf-8-sig") as file:
         csvFile = csv.DictReader(file)
 
         for entry in csvFile:
@@ -15,15 +15,59 @@ def read_csv(file_path: str) -> List[dict]:
     
     return entries
 
-# This will be helpful for extracting a simplified dict of weights per resource
-"""
-list of dicts = [{},{},{}]
 
-resource_weights = {}
+# Restructure into resource dict that looks like {'resource1':weight1, 'resource2':weight2, ...}
+def read_resources(file_path: str) -> Dict:
+    resources = read_csv(file_path)
+    resource_weights = {}
 
-for dict in list:
-    resource_weights[dict["Resource"]] = dict["Weight"]
-"""
+    for dict in resources:
+        resource_weights[dict["Resource"]] = float(dict["Weight"])    
+    return resource_weights
+
+# Restructure into initi state dict that looks like {'country1':{'resource1':qty1, 'resource2':qty2, ...}, 'country2':{'resource1':qty1, 'resource2':qty2, ...}...}
+def read_initial_state(file_path: str) -> Dict:
+    raw_init_state = read_csv(file_path)
+    init_state = {}
+
+    for dictionary in raw_init_state:
+        # convert resource qty into a int
+        for key, value in dictionary.items():
+            if key != 'Country':
+                dictionary[key] = int(value)
+        
+        init_state[dictionary['Country']] = dict(list(dictionary.items())[1:])
+    
+    return init_state
+
+# determines if transform is ready depending on the current state, the country that is trying to perform a transform,
+# the desired resource to be created, and the transform preconditions
+def transform_isValid(state: State, country: str, desired_mfg_resource: str, preconditions: dict) -> bool:
+
+    if desired_mfg_resource == 'MetallicAlloys':
+        if (state[country]['Population'] >= preconditions['metallicAlloys'].inputs['Population'] and 
+            state[country]['MetallicElements'] >= preconditions['metallicAlloys'].inputs['MetallicElements']):
+            return True
+        else: return False
+    elif desired_mfg_resource == 'Electronics':
+        if (state[country]['Population'] >= preconditions['electronics'].inputs['Population'] and 
+            state[country]['MetallicElements'] >= preconditions['electronics'].inputs['MetallicElements'] and 
+            state[country]['MetallicAlloys'] >= preconditions['electronics'].inputs['MetallicAlloys']):
+            return True
+        else: return False
+    elif desired_mfg_resource == 'Housing':
+        if (state[country]['Population'] >= preconditions['housing'].inputs['Population'] and 
+            state[country]['MetallicElements'] >= preconditions['housing'].inputs['MetallicElements'] and 
+            state[country]['Timber'] >= preconditions['housing'].inputs['Timber'] and 
+            state[country]['MetallicAlloys'] >= preconditions['housing'].inputs['MetallicAlloys']):
+            return True
+        else: return False
+
+
+def transfer_isValid(state: State, from_country: str, resource: str, qty: int):
+    if state[from_country][resource] - qty >= 0:
+        return True
+    else: return False    
 
 """ 
 Here's my State Quality Function. Here's how I came up with it:
@@ -78,5 +122,3 @@ def calc_schedule_probability(probs:List):
 def expected_utility(schedule_prob,discounted_reward):
     C = -.5
     return (schedule_prob * discounted_reward) + ((1-schedule_prob) * C)
-
-

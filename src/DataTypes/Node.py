@@ -11,13 +11,13 @@ class Node(object):
    PARENT_ACTION: Action
    PATH_COST: float
 
-   def __init__(self, state: State, parent: Node, parent_action: Action, path_cost: float) -> None:
+   def __init__(self, state: State, parent: Node, parent_action: Action) -> None:
       super().__init__()
       self.ID = uuid4()
       self.STATE = state
       self.PARENT = parent
       self.PARENT_ACTION = parent_action
-      self.PATH_COST = path_cost
+      # self.PATH_COST = path_cost # not sure if I need this
 
    def __eq__(self, other: Node) -> bool:
       return self.ID == other.ID
