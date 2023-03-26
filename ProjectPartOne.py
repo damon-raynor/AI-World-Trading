@@ -1,5 +1,5 @@
-from ProblemFormulations import ImplicitGraph
-from DataTypes import Parser, HelperFunctions, Node
+from src.ProblemFormulations import ImplicitGraph
+from src.DataTypes import Parser, HelperFunctions, Node
 
 def country_scheduler(your_country_name :str, resource_filename :str, initial_state_filename :str, output_schedule_filename :str, depth_bound :int, frontier_max_size :int):
     

@@ -37,9 +37,9 @@ class BreadthFirstSearch(SearchStrategy):
                frontier.append(child)
       return Solution(None)
 
-   def search_without_reached(self, initial_state: State, actions: List[Action], goals: List[State]) -> Solution:
+   def search_without_reached(self, root_node: Node, actions: List[Action], goals: List[State]) -> Solution:
       visited = []
-      node = Node(initial_state, None, None, 0.0)
+      node = Node(root_node, Node, None, 0.0)
       if node.STATE in goals:
          return Solution(node, visited + [node.STATE])
       frontier = [ node ]
@@ -53,6 +53,6 @@ class BreadthFirstSearch(SearchStrategy):
                frontier.append(child)
       return Solution(None)
 
-   def search(self, initial_state: State, actions: List[Action], _heuristic: Union[Heuristic, None], goals: List[State]) -> Solution:
+   def search(self, root_node: Node, actions: List[Action], _heuristic: Union[Heuristic, None], goals: List[State]) -> Solution:
       search_function = self.search_without_reached if self.TREE_BASED_SEARCH else self.search_with_reached
-      return search_function(initial_state, actions, goals)
+      return search_function(root_node, actions, goals)

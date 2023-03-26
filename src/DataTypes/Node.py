@@ -6,12 +6,12 @@ from uuid import UUID, uuid4
 class Node(object):
 
    ID: UUID
-   STATE: State
+   STATE: dict
    PARENT: Node
    PARENT_ACTION: Action
    PATH_COST: float
 
-   def __init__(self, state: State, parent: Node, parent_action: Action) -> None:
+   def __init__(self, state: dict, parent: Node, parent_action: Action) -> None:
       super().__init__()
       self.ID = uuid4()
       self.STATE = state
@@ -25,5 +25,7 @@ class Node(object):
    def __hash__(self) -> int:
       return hash(self.ID)
 
+
+# go to 4.2 Programmiong comments part 1. 09:10 
    def identify_potential_states_based_on_feasible_action ():
       return

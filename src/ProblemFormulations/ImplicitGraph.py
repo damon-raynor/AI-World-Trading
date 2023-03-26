@@ -20,4 +20,4 @@ class ImplicitGraph(object):
       self.ACTION_PREREQUISITES = action_prerequisites
 
    def search(self, strategy: SearchStrategy) -> Solution:
-      return strategy.search(self.ROOT_NODE, self.SEARCH_DEPTH)
+      return strategy.search(self.ROOT_NODE, self.SEARCH_DEPTH, self.ACTION_PREREQUISITES)

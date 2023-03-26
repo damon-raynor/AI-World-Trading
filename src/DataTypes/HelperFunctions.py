@@ -1,6 +1,5 @@
 from typing import List, Dict
-import csv
-from .State import State
+import csv, copy
 from math import exp, prod
 
 # taking data from a csv file. Converting rows into dicts. Putting each dict into a list.
@@ -25,7 +24,7 @@ def read_resources(file_path: str) -> Dict:
         resource_weights[dict["Resource"]] = float(dict["Weight"])    
     return resource_weights
 
-# Restructure into initi state dict that looks like {'country1':{'resource1':qty1, 'resource2':qty2, ...}, 'country2':{'resource1':qty1, 'resource2':qty2, ...}...}
+# Restructure into init state dict that looks like {'country1':{'resource1':qty1, 'resource2':qty2, ...}, 'country2':{'resource1':qty1, 'resource2':qty2, ...}...}
 def read_initial_state(file_path: str) -> Dict:
     raw_init_state = read_csv(file_path)
     init_state = {}
@@ -40,34 +39,133 @@ def read_initial_state(file_path: str) -> Dict:
     
     return init_state
 
-# determines if transform is ready depending on the current state, the country that is trying to perform a transform,
-# the desired resource to be created, and the transform preconditions
-def transform_isValid(state: State, country: str, desired_mfg_resource: str, preconditions: dict) -> bool:
-
-    if desired_mfg_resource == 'MetallicAlloys':
-        if (state[country]['Population'] >= preconditions['metallicAlloys'].inputs['Population'] and 
-            state[country]['MetallicElements'] >= preconditions['metallicAlloys'].inputs['MetallicElements']):
-            return True
-        else: return False
-    elif desired_mfg_resource == 'Electronics':
-        if (state[country]['Population'] >= preconditions['electronics'].inputs['Population'] and 
-            state[country]['MetallicElements'] >= preconditions['electronics'].inputs['MetallicElements'] and 
-            state[country]['MetallicAlloys'] >= preconditions['electronics'].inputs['MetallicAlloys']):
-            return True
-        else: return False
-    elif desired_mfg_resource == 'Housing':
-        if (state[country]['Population'] >= preconditions['housing'].inputs['Population'] and 
-            state[country]['MetallicElements'] >= preconditions['housing'].inputs['MetallicElements'] and 
-            state[country]['Timber'] >= preconditions['housing'].inputs['Timber'] and 
-            state[country]['MetallicAlloys'] >= preconditions['housing'].inputs['MetallicAlloys']):
-            return True
-        else: return False
-
-
-def transfer_isValid(state: State, from_country: str, resource: str, qty: int):
+def transfer_isValid(state: dict, from_country: str, resource: str, qty: int):
     if state[from_country][resource] - qty >= 0:
         return True
     else: return False    
+
+def transfer(state: dict, from_country: str, to_country: str, resource: str, qty: int):
+    if transfer_isValid(state, from_country, resource, qty):
+        new_state = copy.deepcopy(state)
+        new_state[from_country][resource] -= qty
+        new_state[to_country][resource] += qty
+        return new_state
+
+def list_possible_transfers(state, agent_country):
+    valid_transfers = [] # collection of possible transfers (tuples) in the form of (from_country, to_country, resource, qty)
+        
+    for from_country in state.keys(): # identify possible transfers from each country
+        for resource in state[from_country].keys(): # see if they can transfer each resource category
+            if resource != "Population": # no transferring population
+                valid = True
+                multiple = 1
+                            
+                while valid:
+                    qty = 10 * multiple # countries can only trade in multiples of 10 
+                    
+                    if transfer_isValid(state, from_country, resource, qty):
+                        
+                        if from_country != agent_country:
+                            valid_transfers.append((from_country, agent_country, resource, qty)) # adds a possible transfer from another country to the agent_country
+                        
+                        elif from_country == agent_country:
+                            for to_country in state.keys(): # adds a possible transfer from the agent_country to all other countries
+                                if to_country != agent_country:
+                                    valid_transfers.append((agent_country, to_country, resource, qty))  
+                    
+                    else: valid = False
+                    
+                    multiple += 1
+
+    return valid_transfers
+
+# determines if transform is ready depending on the current state, the country that is trying to perform a transform,
+# the desired resource to be created, and the transform preconditions
+def transform_isValid(state: dict, country: str, desired_mfg_resource: str, preconditions: dict, num_of_transforms: int) -> bool:
+    if num_of_transforms == 0:
+        return False
+    
+    if desired_mfg_resource == 'MetallicAlloys':
+        if (state[country]['Population'] >= (num_of_transforms * preconditions['metallicAlloys'].inputs['Population']) and 
+            state[country]['MetallicElements'] >= (num_of_transforms * preconditions['metallicAlloys'].inputs['MetallicElements'])):
+            return True
+        else: return False
+    elif desired_mfg_resource == 'Electronics':
+        if (state[country]['Population'] >= (num_of_transforms * preconditions['electronics'].inputs['Population']) and 
+            state[country]['MetallicElements'] >= (num_of_transforms * preconditions['electronics'].inputs['MetallicElements']) and 
+            state[country]['MetallicAlloys'] >= (num_of_transforms * preconditions['electronics'].inputs['MetallicAlloys'])):
+            return True
+        else: return False
+    elif desired_mfg_resource == 'Housing':
+        if (state[country]['Population'] >= (num_of_transforms * preconditions['housing'].inputs['Population']) and 
+            state[country]['MetallicElements'] >= (num_of_transforms * preconditions['housing'].inputs['MetallicElements']) and 
+            state[country]['Timber'] >= (num_of_transforms * preconditions['housing'].inputs['Timber']) and 
+            state[country]['MetallicAlloys'] >= (num_of_transforms * preconditions['housing'].inputs['MetallicAlloys'])):
+            return True
+        else: return False
+
+def transform(state: dict, country: str, desired_mfg_resource: str, preconditions: dict, num_of_transforms: int):
+    if transform_isValid(state, country, desired_mfg_resource, preconditions, num_of_transforms):
+        new_state = copy.deepcopy(state)
+        if desired_mfg_resource == 'MetallicAlloys':
+            
+            # subtract transform inputs from resources, except for population 
+            for resource in preconditions['metallicAlloys'].inputs.keys():
+                if resource != 'Population':
+                    new_state[country][resource] -= (num_of_transforms * preconditions['metallicAlloys'].inputs[resource])
+            
+            # add transform outputs to resources, except for population
+            for resource in preconditions['metallicAlloys'].outputs.keys():
+                if resource != 'Population':
+                    new_state[country][resource] += (num_of_transforms * preconditions['metallicAlloys'].outputs[resource])
+            
+            return new_state
+        
+        if desired_mfg_resource == 'Electronics':
+            
+            # subtract transform inputs from resources, except for population 
+            for resource in preconditions['electronics'].inputs.keys():
+                if resource != 'Population':
+                    new_state[country][resource] -= (num_of_transforms * preconditions['electronics'].inputs[resource])
+            
+            # add transform outputs to resources, except for population
+            for resource in preconditions['electronics'].outputs.keys():
+                if resource != 'Population':
+                    new_state[country][resource] += (num_of_transforms * preconditions['electronics'].outputs[resource])
+            
+            return new_state
+        
+        if desired_mfg_resource == 'Housing':
+            # subtract transform inputs from resources, except for population 
+            for resource in preconditions['housing'].inputs.keys():
+                if resource != 'Population':
+                    new_state[country][resource] -= (num_of_transforms * preconditions['housing'].inputs[resource])
+            
+            # add transform outputs to resources, except for population
+            for resource in preconditions['housing'].outputs.keys():
+                if resource != 'Population':
+                    new_state[country][resource] += (num_of_transforms * preconditions['housing'].outputs[resource])
+            
+            return new_state
+        
+def list_possible_transforms(state, country, preconditions):
+    valid_transforms = [] # collection of possible transforms (tuples) in the form of (desired_resource, num_of_transforms)
+    mfg_resources = ['Housing', "MetallicAlloys", "Electronics"]
+    for desired_resource in mfg_resources:
+        valid = True
+        num_of_transforms = 1
+        
+        while valid:
+            
+            if transform_isValid(state, country, desired_resource, preconditions, num_of_transforms):
+                
+                valid_transforms.append((desired_resource, num_of_transforms))
+                num_of_transforms *= 2
+            
+            else: valid = False
+    
+    return valid_transforms
+
 
 """ 
 Here's my State Quality Function. Here's how I came up with it:
@@ -102,7 +200,7 @@ def calc_state_quality(country: Dict, weights: Dict):
     return state_quality
 
 # here I assume that the calc_state_quality will be defined as a method within the State class. Therefore a State will be passed to this function.
-def calc_undiscounted_reward(start_state: State, end_state: State):
+def calc_undiscounted_reward(start_state: list[dict], end_state: list[dict]):
     return end_state.calc_state_quality - start_state.calc_state_quality
 
 # here i dont know where the time stamp is going to come from. maybe this is inside of the Node Class???
