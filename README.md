@@ -1,6 +1,10 @@
 # **AI World Trading Programming Project**
 CS 5260-50 | Artificial Intelligence | Damon Raynor
 
+## Running the Project
+To run the project, navigate to the "ProjectPartOne.py" file and run it as a script. it contains the country scheduler function and then calls the function near the bottom of the script.
+
+
 ## Current Progress 
 1. ~~Decide on a State Quality function for your agent~~
 2. ~~Create your State representation in code~~
@@ -8,6 +12,6 @@ CS 5260-50 | Artificial Intelligence | Damon Raynor
 4. ~~Write code to calculate the State Quality, rewards, and success probabilities for a given country and schedule~~
 5. ~~Write code to calculate the Expected Utility of a given schedule~~
 6. ~~Write code to parse TRANSFORM operators into Actions in your code ~~
-7. Write code to expand a current State into a set of possible next States given a set of
-possible Actions (along with their prerequisites)
+7. ~~Write code to expand a current State into a set of possible next States given a set of possible Actions (along with their prerequisites)~~
 8. Fine-tune your code
+

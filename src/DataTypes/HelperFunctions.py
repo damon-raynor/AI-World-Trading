@@ -1,6 +1,7 @@
 from typing import List, Dict
 import csv, copy
 from math import exp, prod
+from .Action import Action
 
 # taking data from a csv file. Converting rows into dicts. Putting each dict into a list.
 # Credit to John Ford
@@ -13,6 +14,7 @@ def read_csv(file_path: str) -> List[dict]:
             entries.append(entry)
     
     return entries
+
 
 
 # Restructure into resource dict that looks like {'resource1':weight1, 'resource2':weight2, ...}
@@ -51,7 +53,7 @@ def transfer(state: dict, from_country: str, to_country: str, resource: str, qty
         new_state[to_country][resource] += qty
         return new_state
 
-def list_possible_transfers(state, agent_country):
+def list_possible_transfers(state, agent_country) -> list[Action]:
     valid_transfers = [] # collection of possible transfers (tuples) in the form of (from_country, to_country, resource, qty)
         
     for from_country in state.keys(): # identify possible transfers from each country
@@ -66,12 +68,26 @@ def list_possible_transfers(state, agent_country):
                     if transfer_isValid(state, from_country, resource, qty):
                         
                         if from_country != agent_country:
-                            valid_transfers.append((from_country, agent_country, resource, qty)) # adds a possible transfer from another country to the agent_country
+                            transfer_action = Action(agent_country, 
+                                                     'transfer', 
+                                                     transfer, 
+                                                     from_country, 
+                                                     agent_country, 
+                                                     resource, 
+                                                     qty)
+                            valid_transfers.append(transfer_action) # adds a possible transfer from another country to the agent_country
                         
                         elif from_country == agent_country:
                             for to_country in state.keys(): # adds a possible transfer from the agent_country to all other countries
                                 if to_country != agent_country:
-                                    valid_transfers.append((agent_country, to_country, resource, qty))  
+                                    transfer_action = Action(agent_country, 
+                                                     'transfer', 
+                                                     transfer, 
+                                                     agent_country, 
+                                                     to_country, 
+                                                     resource, 
+                                                     qty)
+                                    valid_transfers.append(transfer_action)  
                     
                     else: valid = False
                     
@@ -148,8 +164,8 @@ def transform(state: dict, country: str, desired_mfg_resource: str, precondition
             
             return new_state
         
-def list_possible_transforms(state, country, preconditions):
-    valid_transforms = [] # collection of possible transforms (tuples) in the form of (desired_resource, num_of_transforms)
+def list_possible_transforms(state: dict, agent_country: str, preconditions: dict) -> list[Action]:
+    valid_transforms: list[Action] = [] # collection of possible transforms (Action) in the form of (desired_resource, num_of_transforms)
     mfg_resources = ['Housing', "MetallicAlloys", "Electronics"]
     for desired_resource in mfg_resources:
         valid = True
@@ -157,9 +173,9 @@ def list_possible_transforms(state, country, preconditions):
         
         while valid:
             
-            if transform_isValid(state, country, desired_resource, preconditions, num_of_transforms):
-                
-                valid_transforms.append((desired_resource, num_of_transforms))
+            if transform_isValid(state, agent_country, desired_resource, preconditions, num_of_transforms):
+                transform_action = Action(agent_country, 'transform', transform, None, None, desired_resource, num_of_transforms)
+                valid_transforms.append(transform_action)
                 num_of_transforms *= 2
             
             else: valid = False
@@ -192,7 +208,7 @@ def calc_state_quality(country: Dict, weights: Dict):
     excessElectronics = (country["Electronics"] - country["Population"]) if country["Electronics"] / (country["Population"] >= 1) else 0
     
     #adds all waste up.
-    waste = (weights["MetallicAlloyWaste"]*country["MetallicElementWaste"] + weights["ElectronicWaste"]*country["ElectronicWaste"] + weights["HousingWaste"]*country["HousingWaste"])
+    waste = (weights["MetallicAlloyWaste"]*country["MetallicAlloyWaste"] + weights["ElectronicWaste"]*country["ElectronicWaste"] + weights["HousingWaste"]*country["HousingWaste"])
     
     # state quality is calculated by summing over the ratio of housing:population, electronics:population and the additional of all resources it has multiplied by its respective weight.
     state_quality = (country["Housing"] / country["Population"]) + (country["Electronics"] / country["Population"]) + (weights["MetallicElements"]*country["MetallicElements"]) + (weights["MetallicAlloys"]*country["MetallicAlloys"]) + weights["Housing"]*excessHousing + weights["Electronics"]*excessElectronics - waste
@@ -200,13 +216,13 @@ def calc_state_quality(country: Dict, weights: Dict):
     return state_quality
 
 # here I assume that the calc_state_quality will be defined as a method within the State class. Therefore a State will be passed to this function.
-def calc_undiscounted_reward(start_state: list[dict], end_state: list[dict]):
-    return end_state.calc_state_quality - start_state.calc_state_quality
+def calc_undiscounted_reward(future_node_state_quality: float, root_state_quality: float):
+    return future_node_state_quality - root_state_quality
 
 # here i dont know where the time stamp is going to come from. maybe this is inside of the Node Class???
 def calc_discounted_reward(undiscounted_reward, N):
     y = .5
-    return y^N * undiscounted_reward
+    return y**N * undiscounted_reward
 
 def calc_prob_of_accept(discounted_reward):
     L = 1
@@ -217,6 +233,81 @@ def calc_prob_of_accept(discounted_reward):
 def calc_schedule_probability(probs:List):
     return prod(probs)
 
-def expected_utility(schedule_prob,discounted_reward):
+def expected_utility(future_node_state_quality, root_state_quality, old_schedule_prob, N):
     C = -.5
-    return (schedule_prob * discounted_reward) + ((1-schedule_prob) * C)
+
+    undiscounted_reward = calc_undiscounted_reward(future_node_state_quality, root_state_quality)
+    discounted_reward = calc_discounted_reward(undiscounted_reward, N)
+    success_probability = calc_prob_of_accept(discounted_reward)
+    schedule_probability = old_schedule_prob * success_probability
+    eu = (schedule_probability * discounted_reward) + ((1-schedule_probability) * C)
+    return schedule_probability, eu
+
+
+
+
+
+
+def create_output_schedule(file_name: str, solutions: list, action_preconditions: dict):
+    file = open(file_name, 'w')
+    queue = []
+    all_text = f""
+    for node in solutions:
+        queue.append(node)
+        hasParent = True
+        n = node
+        while hasParent:
+            if n.PARENT != None:
+                queue.append(n.PARENT)
+                n = n.PARENT
+                
+            else: hasParent = False
+        
+        for node in queue:
+            if node.PARENT_ACTION == None:
+                text = f""" [ROOT NODE] """ 
+                all_text += text
+            else:
+                if node.PARENT_ACTION.ACTION_TYPE == 'transfer':
+                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}  {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
+                    all_text += text
+                elif node.PARENT_ACTION.ACTION_TYPE == 'transform':
+                    resource = (node.PARENT_ACTION.DESIRED_RESOURCE)
+                    if resource == "housing":
+                        inputs =("(Population " + str((action_preconditions["housing"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicElements " + str((action_preconditions["housing"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (Timber " + str((action_preconditions["housing"].inputs["Timber"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicAlloys " + str((action_preconditions["housing"].inputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")")
+                        outputs = ("(Population " + str((action_preconditions["housing"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (Housing " + str((action_preconditions["housing"].outputs["Housing"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (HousingWaste " + str((action_preconditions["housing"].outputs["HousingWaste"] * node.PARENT_ACTION.QTY)) + ")")
+                        text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                                            (INPUTS {inputs}))
+                                            (OUTPUTS {outputs}) \n"""
+                        all_text += text
+                    
+                    elif resource == "electronics": 
+                        inputs =("(Population " + str((action_preconditions["electronics"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicElements " + str((action_preconditions["electronics"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicAlloys " + str((action_preconditions["electronics"].inputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")")
+                        outputs = ("(Population " + str((action_preconditions["electronics"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (Electronics " + str((action_preconditions["electronics"].outputs["Electronics"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (ElectronicWaste " + str((action_preconditions["electronics"].outputs["ElectronicWaste"] * node.PARENT_ACTION.QTY)) + ")")
+                        text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                                            (INPUTS {inputs}))
+                                            (OUTPUTS {outputs}) \n"""
+                        all_text += text
+                    elif resource == "metallicAlloys":
+                        inputs =("(Population " + str((action_preconditions["metallicAlloys"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicElements " + str((action_preconditions["metallicAlloys"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")")
+                        outputs = ("(Population " + str((action_preconditions["metallicAlloys"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicAlloys " + str((action_preconditions["metallicAlloys"].outputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")"
+                                + "\n                                               (MetallicAlloyWaste " + str((action_preconditions["metallicAlloys"].outputs["MetallicAlloyWaste"] * node.PARENT_ACTION.QTY)) + ")")
+                        text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                                            (INPUTS {inputs}))
+                                            (OUTPUTS {outputs}) \n"""
+                        all_text += text
+
+        file.write(f"[\n{all_text}\n]")
+            
+    file.close()

@@ -29,7 +29,7 @@ class DepthFirstSearch(SearchStrategy):
          visited.append(node.STATE)
          if node.STATE in goals:
             return Solution(node, visited)
-         for child in self._expand(actions, node):
+         for child in self._expand(node, agent_country, actions):
             if child.STATE not in reached:
                reached.append(child.STATE)
                frontier.append(child)
@@ -43,7 +43,7 @@ class DepthFirstSearch(SearchStrategy):
          visited.append(node.STATE)
          if node.STATE in goals:
             return Solution(node, visited)
-         for child in self._expand(actions, node):
+         for child in self._expand(node, agent_country, actions):
             frontier.append(child)
       return Solution(None)
 

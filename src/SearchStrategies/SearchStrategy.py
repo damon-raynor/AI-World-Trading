@@ -17,5 +17,5 @@ class SearchStrategy(object):
       super().__init__()
       self.TREE_BASED_SEARCH = tree_based_search
 
-   def search(self, root_node: Node, search_depth: int, action_prerequisites: Dict) -> Solution:
+   def search(self, root_node: Node, search_depth: int, action_preconditions: Dict) -> Solution:
       raise NotImplementedError('ERROR: This method must be overridden by a concrete search strategy implementation')

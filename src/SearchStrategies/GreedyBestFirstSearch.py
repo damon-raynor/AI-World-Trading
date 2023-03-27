@@ -29,7 +29,7 @@ class GreedyBestFirstSearch(SearchStrategy):
          visited.append(node.STATE)
          if node.STATE in goals:
             return Solution(node, visited)
-         for child in self._expand(actions, node):
+         for child in self._expand(node, agent_country, actions):
             if child.STATE not in reached or child.PATH_COST < reached[child.STATE].PATH_COST:
                reached[child.STATE] = child
                frontier.add(child)
@@ -44,7 +44,7 @@ class GreedyBestFirstSearch(SearchStrategy):
          visited.append(node.STATE)
          if node.STATE in goals:
             return Solution(node, visited)
-         for child in self._expand(actions, node):
+         for child in self._expand(node, agent_country, actions):
             frontier.add(child)
       return Solution(None)
 

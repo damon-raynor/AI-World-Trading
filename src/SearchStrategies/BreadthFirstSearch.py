@@ -2,57 +2,44 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-from typing import List, Union
-from ..DataTypes import Action, Heuristic, Node, Solution, State
+from typing import List, Union, Dict
+from ..DataTypes import Action, Heuristic, Node, Solution, State, HelperFunctions
 from .SearchStrategy import SearchStrategy
 
 class BreadthFirstSearch(SearchStrategy):
-
+   
    def __init__(self, tree_based_search: bool) -> None:
       super().__init__(tree_based_search)
+      
+      self.initial_agent_state_quality = 0
+      self.schedule_probability = 1
 
-   def _expand(self, actions: List[Action], node: Node) -> List[Node]:
-      nodes: List[Node] = []
-      for action in actions:
-         next_state = action.apply(node.STATE)
+
+
+   def _expand(self, node: Node, agent_country, action_preconditions, resource_weights) -> List[Node]:
+      child_nodes: List[Node] = []
+      
+      list_of_actions = node.list_possible_actions(agent_country, action_preconditions)
+      
+      for action in list_of_actions:
+         next_state = action.apply(node.STATE, action_preconditions)
          if next_state is not None:
-            nodes.append(Node(next_state, node, action, node.PATH_COST + action.ACTION_COST))
-      return nodes
+            child_nodes.append(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights))
+      return child_nodes
 
-   def search_with_reached(self, initial_state: State, actions: List[Action], goals: List[State]) -> Solution:
-      visited = []
-      node = Node(initial_state, None, None, 0.0)
-      if node.STATE in goals:
-         return Solution(node, visited + [node.STATE])
+   def search(self, agent_country: str, root_node: Node, search_depth: int, action_preconditions: Dict, resource_weights: dict) -> Solution:
+      node = root_node
+      self.initial_agent_state_quality = node.AGENT_STATE_QUALITY
       frontier = [ node ]
-      reached = [ node.STATE ]
+      solutions: list[Node] = []
       while len(frontier):
          node = frontier.pop(0)
-         visited.append(node.STATE)
-         for child in self._expand(actions, node):
-            if child.STATE in goals:
-               return Solution(child, visited + [child.STATE])
-            elif child.STATE not in reached:
-               reached.append(child.STATE)
-               frontier.append(child)
-      return Solution(None)
-
-   def search_without_reached(self, root_node: Node, actions: List[Action], goals: List[State]) -> Solution:
-      visited = []
-      node = Node(root_node, Node, None, 0.0)
-      if node.STATE in goals:
-         return Solution(node, visited + [node.STATE])
-      frontier = [ node ]
-      while len(frontier):
-         node = frontier.pop(0)
-         visited.append(node.STATE)
-         for child in self._expand(actions, node):
-            if child.STATE in goals:
-               return Solution(child, visited + [child.STATE])
+         for child_node in self._expand(node, agent_country, action_preconditions, resource_weights):
+            self.schedule_probability, child_node.eu = HelperFunctions.expected_utility(child_node.AGENT_STATE_QUALITY, self.initial_agent_state_quality, self.schedule_probability, child_node.NODE_DEPTH)
+            if child_node.NODE_DEPTH == search_depth:
+               solutions.append(child_node)
             else:
-               frontier.append(child)
-      return Solution(None)
-
-   def search(self, root_node: Node, actions: List[Action], _heuristic: Union[Heuristic, None], goals: List[State]) -> Solution:
-      search_function = self.search_without_reached if self.TREE_BASED_SEARCH else self.search_with_reached
-      return search_function(root_node, actions, goals)
+               frontier.append(child_node)
+      # order solutions by largest EU 
+      solutions.sort(key=lambda x: x.eu, reverse=True)
+      return solutions
