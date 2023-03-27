@@ -1,0 +1,165 @@
+[
+
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+
+]
+
+[
+
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+
+]
+
+[
+
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+
+]
+
+[
+
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+
+]
+
+[
+
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Carpania  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+ Depth = 3 EU = -0.5 (transfer  Erewhon  Damon ((Timber  10))) 
+ Depth = 2 EU = -0.5 (transfer  Brobdingnag  Damon ((MetallicElements  10))) 
+ Depth = 1 EU = -0.5000000587302055 (transfer  Damon  Carpania ((MetallicElements  70))) 
+ [ROOT NODE] 
+
+]
+

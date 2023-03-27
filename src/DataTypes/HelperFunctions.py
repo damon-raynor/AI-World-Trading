@@ -265,7 +265,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
         
         for node in queue:
             if node.PARENT_ACTION == None:
-                text = f""" [ROOT NODE] """ 
+                text = f""" [ROOT NODE] \n""" 
                 all_text += text
             else:
                 if node.PARENT_ACTION.ACTION_TYPE == 'transfer':
@@ -308,6 +308,6 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                                             (OUTPUTS {outputs}) \n"""
                         all_text += text
 
-        file.write(f"[\n{all_text}\n]")
+        file.write(f"[\n\n{all_text}\n]\n\n")
             
     file.close()
