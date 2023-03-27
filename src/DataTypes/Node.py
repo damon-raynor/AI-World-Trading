@@ -24,6 +24,7 @@ class Node(object):
       self.PARENT_ACTION = parent_action
       self.NODE_DEPTH = node_depth
       self.AGENT_STATE_QUALITY = calc_state_quality(state[agent_country], resource_weights)
+      self.schedule_probability = 1
       self.eu = None
       # self.PATH_COST = path_cost # not sure if I need this
 

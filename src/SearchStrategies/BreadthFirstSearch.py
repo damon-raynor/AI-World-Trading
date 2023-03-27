@@ -12,7 +12,6 @@ class BreadthFirstSearch(SearchStrategy):
       super().__init__(tree_based_search)
       
       self.initial_agent_state_quality = 0
-      self.schedule_probability = 1
 
 
 
@@ -35,7 +34,7 @@ class BreadthFirstSearch(SearchStrategy):
       while len(frontier):
          node = frontier.pop(0)
          for child_node in self._expand(node, agent_country, action_preconditions, resource_weights):
-            self.schedule_probability, child_node.eu = HelperFunctions.expected_utility(child_node.AGENT_STATE_QUALITY, self.initial_agent_state_quality, self.schedule_probability, child_node.NODE_DEPTH)
+            child_node.schedule_probability, child_node.eu = HelperFunctions.expected_utility(child_node.AGENT_STATE_QUALITY, self.initial_agent_state_quality, node.schedule_probability, child_node.NODE_DEPTH)
             if child_node.NODE_DEPTH == search_depth:
                solutions.append(child_node)
             else:

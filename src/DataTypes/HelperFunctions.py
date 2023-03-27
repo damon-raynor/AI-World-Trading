@@ -263,6 +263,71 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                 
             else: hasParent = False
         
+    for node in queue:
+        if node.PARENT_ACTION == None:
+            text = f""" ROOT NODE \n\n""" 
+            all_text += text
+        else:
+            if node.PARENT_ACTION.ACTION_TYPE == 'transfer':
+                text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}  {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
+                all_text += text
+            elif node.PARENT_ACTION.ACTION_TYPE == 'transform':
+                resource = (node.PARENT_ACTION.DESIRED_RESOURCE)
+                if resource == "housing":
+                    inputs =("(Population " + str((action_preconditions["housing"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicElements " + str((action_preconditions["housing"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (Timber " + str((action_preconditions["housing"].inputs["Timber"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicAlloys " + str((action_preconditions["housing"].inputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")")
+                    outputs = ("(Population " + str((action_preconditions["housing"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (Housing " + str((action_preconditions["housing"].outputs["Housing"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (HousingWaste " + str((action_preconditions["housing"].outputs["HousingWaste"] * node.PARENT_ACTION.QTY)) + ")")
+                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                                        (INPUTS {inputs}))
+                                        (OUTPUTS {outputs}) \n"""
+                    all_text += text
+                
+                elif resource == "electronics": 
+                    inputs =("(Population " + str((action_preconditions["electronics"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicElements " + str((action_preconditions["electronics"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicAlloys " + str((action_preconditions["electronics"].inputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")")
+                    outputs = ("(Population " + str((action_preconditions["electronics"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (Electronics " + str((action_preconditions["electronics"].outputs["Electronics"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (ElectronicWaste " + str((action_preconditions["electronics"].outputs["ElectronicWaste"] * node.PARENT_ACTION.QTY)) + ")")
+                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                                        (INPUTS {inputs}))
+                                        (OUTPUTS {outputs}) \n"""
+                    all_text += text
+                elif resource == "metallicAlloys":
+                    inputs =("(Population " + str((action_preconditions["metallicAlloys"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicElements " + str((action_preconditions["metallicAlloys"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")")
+                    outputs = ("(Population " + str((action_preconditions["metallicAlloys"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicAlloys " + str((action_preconditions["metallicAlloys"].outputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")"
+                            + "\n                                               (MetallicAlloyWaste " + str((action_preconditions["metallicAlloys"].outputs["MetallicAlloyWaste"] * node.PARENT_ACTION.QTY)) + ")")
+                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                                        (INPUTS {inputs}))
+                                        (OUTPUTS {outputs}) \n"""
+                    all_text += text
+
+    file.write(f"[\n\n{all_text}]\n\n")
+            
+    file.close()
+
+
+
+def print_output_schedule(solutions: list, action_preconditions: dict):
+    queue = []
+    all_text = f""
+    for node in solutions:
+        queue.append(node)
+        hasParent = True
+        n = node
+        while hasParent:
+            if n.PARENT != None:
+                queue.append(n.PARENT)
+                n = n.PARENT
+                
+            else: hasParent = False
+        
         for node in queue:
             if node.PARENT_ACTION == None:
                 text = f""" [ROOT NODE] \n""" 
@@ -308,6 +373,4 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                                             (OUTPUTS {outputs}) \n"""
                         all_text += text
 
-        file.write(f"[\n\n{all_text}\n]\n\n")
-            
-    file.close()
+        print(f"[\n\n{all_text}\n]\n\n")
