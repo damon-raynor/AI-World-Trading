@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 from typing import List, Union, Dict
-from ..DataTypes import Action, Heuristic, Node, Solution, State, HelperFunctions
+from ..DataTypes import Node, PriorityQueue, HelperFunctions
 from .SearchStrategy import SearchStrategy
 
 class BreadthFirstSearch(SearchStrategy):
@@ -26,19 +26,18 @@ class BreadthFirstSearch(SearchStrategy):
             child_nodes.append(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights))
       return child_nodes
 
-   def search(self, agent_country: str, root_node: Node, search_depth: int, action_preconditions: Dict, resource_weights: dict) -> Solution:
+   def search(self, agent_country: str, root_node: Node, search_depth: int, action_preconditions: Dict, resource_weights: dict) -> List[Node]:
       node = root_node
       self.initial_agent_state_quality = node.AGENT_STATE_QUALITY
       frontier = [ node ]
-      solutions: list[Node] = []
+      solutions = PriorityQueue(5)
       while len(frontier):
          node = frontier.pop(0)
          for child_node in self._expand(node, agent_country, action_preconditions, resource_weights):
             child_node.schedule_probability, child_node.eu = HelperFunctions.expected_utility(child_node.AGENT_STATE_QUALITY, self.initial_agent_state_quality, node.schedule_probability, child_node.NODE_DEPTH)
             if child_node.NODE_DEPTH == search_depth:
-               solutions.append(child_node)
+               solutions = solutions.add(child_node)
             else:
                frontier.append(child_node)
-      # order solutions by largest EU 
-      solutions.sort(key=lambda x: x.eu, reverse=True)
-      return solutions
+
+      return solutions.queue

@@ -8,30 +8,44 @@ import operator
 
 class PriorityQueue(object):
 
-   queue: List[Tuple[Node, float]]
-   evaluation_function: Callable[[Node], float]
-   priority_operator: bool
+   queue: List[Node]
+   max_size: int
 
-   def __init__(self, eval_fn: Callable[[Node], float], ascending: bool) -> None:
+   def __init__(self, max_size: int) -> None:
       super().__init__()
       self.queue = []
-      self.evaluation_function = eval_fn
-      self.priority_operator = operator.gt if ascending else operator.lt
+      self.max_size = max_size
 
    def add(self, node: Node) -> PriorityQueue:
-      cost = self.evaluation_function(node)
-      for idx, node_and_cost in enumerate(self.queue):
-         if self.priority_operator(cost, node_and_cost[1]):
-            self.queue.insert(idx, (node, cost))
+      for idx, n in enumerate(self.queue):
+         if node.eu > n.eu:
+            
+            if len(self.queue) < self.max_size:
+               self.queue.insert(idx, node)
+               print("length of solutions is: ",len(self.queue))
+               return self
+            else:
+               popped = self.queue.pop()
+               self.queue.insert(idx, node)
+               return self
+      if not self.queue:
+         self.queue.append(node)
+         print("length of solutions is: ",len(self.queue))
+         return self 
+      else:
+         if len(self.queue) < self.max_size:
+            self.queue.append(node)
+            print("length of solutions is: ",len(self.queue))
             return self
-      self.queue.append((node, cost))
-      return self
+         else:
+            return self
+      
 
    def is_empty(self) -> bool:
       return len(self.queue) == 0
 
    def pop(self) -> Node:
-      return self.queue.pop()[0]
+      return self.queue.pop()
 
    def as_list(self) -> List[Node]:
       return [item for item, _ in self.queue][::-1]

@@ -32,35 +32,35 @@ from src.SearchStrategies import BreadthFirstSearch
 #                          'ElectronicWaste': 0, 
 #                          'HousingWaste': 0}}
 
-action_preconditions = {'metallicAlloys': Parser.parse('alloys.tmpl'),
-                     'housing': Parser.parse('housing.tmpl'),
-                     'electronics': Parser.parse('electronics.tmpl')}
-# print(HelperFunctions.transform_isValid(local_state,'Damon', 'Housing', action_preconditions))
-# print(HelperFunctions.transfer_isValid(local_state, 'Damon','Electronics',500))
+# action_preconditions = {'metallicAlloys': Parser.parse('alloys.tmpl'),
+#                      'housing': Parser.parse('housing.tmpl'),
+#                      'electronics': Parser.parse('electronics.tmpl')}
+# # print(HelperFunctions.transform_isValid(local_state,'Damon', 'Housing', action_preconditions))
+# # print(HelperFunctions.transfer_isValid(local_state, 'Damon','Electronics',500))
 
-# new_state = HelperFunctions.transform(local_state, 'Damon', 'MetallicAlloys', action_preconditions)
+# # new_state = HelperFunctions.transform(local_state, 'Damon', 'MetallicAlloys', action_preconditions)
 
-# print(new_state)
+# # print(new_state)
 
-initial_state_filename = 'initial_world_state.csv'
-initial_state = HelperFunctions.read_initial_state(initial_state_filename)
+# initial_state_filename = 'initial_world_state.csv'
+# initial_state = HelperFunctions.read_initial_state(initial_state_filename)
 
-resource_filename = 'resource_weights.csv'
-resource_weights = HelperFunctions.read_resources(resource_filename)
-# print(initial_state['Damon'])
-possible_transforms = HelperFunctions.list_possible_transforms(initial_state,"Damon", action_preconditions)
-# print(len(possible_transforms))
-possible_transfers = HelperFunctions.list_possible_transfers(initial_state,"Damon")
-# print(len(possible_transfers))
+# resource_filename = 'resource_weights.csv'
+# resource_weights = HelperFunctions.read_resources(resource_filename)
+# # print(initial_state['Damon'])
+# possible_transforms = HelperFunctions.list_possible_transforms(initial_state,"Damon", action_preconditions)
+# # print(len(possible_transforms))
+# possible_transfers = HelperFunctions.list_possible_transfers(initial_state,"Damon")
+# # print(len(possible_transfers))
 
 
 
-# root_node = Node(initial_state, 'Damon', None, None, 0, resource_weights)
-possible_actions = []
-possible_actions += possible_transfers
-possible_actions += possible_transforms
-shuffle(possible_actions)
-print(len(possible_actions))
+# # root_node = Node(initial_state, 'Damon', None, None, 0, resource_weights)
+# possible_actions = []
+# possible_actions += possible_transfers
+# possible_actions += possible_transforms
+# shuffle(possible_actions)
+# print(len(possible_actions))
 # print(possible_actions[0].ACTION_TYPE)
 # print(possible_actions[0].apply(initial_state, action_preconditions))
 # child_node = Node(possible_actions[0].apply(initial_state, action_preconditions), root_node, possible_actions[0], root_node.NODE_DEPTH + 1)
@@ -145,3 +145,30 @@ print(len(possible_actions))
 #     file.close()
 
 # create_output_schedule(solutions)
+
+def add(list, num) -> list:
+    for idx, number in enumerate(list):
+        if num > number:
+            if len(list) < 3:
+                list.insert(idx, num)
+                return list
+            else: 
+                list.pop()
+                list.insert(idx, num)
+                return list
+    list.append(num)
+    return list
+
+l = []
+print(l)
+
+l = add(l,5)
+print(l)
+l = add(l,6)
+print(l)
+l = add(l,2)
+print(l)
+l = add(l,10)
+print(l)
+l = add(l, 5.5)
+print(l)
