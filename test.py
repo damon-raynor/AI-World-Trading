@@ -55,23 +55,24 @@ possible_transfers = HelperFunctions.list_possible_transfers(initial_state,"Damo
 
 
 
-root_node = Node(initial_state, 'Damon', None, None, 0, resource_weights)
-# possible_actions = []
-# possible_actions += possible_transfers
-# possible_actions += possible_transforms
-# shuffle(possible_actions)
+# root_node = Node(initial_state, 'Damon', None, None, 0, resource_weights)
+possible_actions = []
+possible_actions += possible_transfers
+possible_actions += possible_transforms
+shuffle(possible_actions)
+print(len(possible_actions))
 # print(possible_actions[0].ACTION_TYPE)
 # print(possible_actions[0].apply(initial_state, action_preconditions))
 # child_node = Node(possible_actions[0].apply(initial_state, action_preconditions), root_node, possible_actions[0], root_node.NODE_DEPTH + 1)
 
 # print('\n child node depth = ', child_node.NODE_DEPTH)
 
-search_strategy = BreadthFirstSearch(False)
-solutions = search_strategy.search('Damon', root_node, 2, action_preconditions, resource_weights)
-solutions.sort(key=lambda x: x.eu)
-print(len(solutions))
-print(type(solutions[0]))
-print(solutions[300])
+# search_strategy = BreadthFirstSearch(False)
+# solutions = search_strategy.search('Damon', root_node, 2, action_preconditions, resource_weights)
+# solutions.sort(key=lambda x: x.eu)
+# print(len(solutions))
+# print(type(solutions[0]))
+# print(solutions[300])
 
 
 # N0 = Node(initial_state, 'Damon', None, None, 0, resource_weights)

@@ -52,5 +52,6 @@ class Node(object):
       possible_actions += possible_transfers
       possible_actions += possible_transforms
       shuffle(possible_actions)
+      print(len(possible_actions))
       #TODO take a subset of transfers
       return possible_actions

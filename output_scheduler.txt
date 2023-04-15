@@ -1,28 +1,28 @@
 [
 
- Depth = 3 EU = 6.993058423713505 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
- Depth = 2 EU = 11.199830285348822 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
- Depth = 1 EU = 13.999987942843598 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 3 EU = 19.207999846324082 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 2 EU = 21.951999925402195 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 1 EU = 19.599999939117378 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
- Depth = 3 EU = 6.992745400546924 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
- Depth = 2 EU = 9.799420315931572 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
- Depth = 1 EU = 13.999987942843598 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 3 EU = 19.207999763685443 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 2 EU = 19.207999852004086 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 1 EU = 19.599999939117378 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
- Depth = 3 EU = 6.991380087812026 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
- Depth = 2 EU = 11.197209693849498 (transfer  Erewhon  Damon ((MetallicElements  50))) 
- Depth = 1 EU = 8.397999130744925 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 3 EU = 19.20784831469971 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 2 EU = 21.951826969478947 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 1 EU = 11.759906583265849 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
  ROOT NODE 
 
- Depth = 3 EU = 6.984657402308629 (transfer  Erewhon  Damon ((MetallicElements  50))) 
- Depth = 2 EU = 6.991482526412149 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
- Depth = 1 EU = 8.397999130744925 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 3 EU = 19.207826967491776 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 2 EU = 13.71987595923692 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 1 EU = 11.759906583265849 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
  ROOT NODE 
 
- Depth = 3 EU = 6.96514653646449 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
- Depth = 2 EU = 9.761483313373537 (transfer  Erewhon  Damon ((MetallicElements  50))) 
- Depth = 1 EU = 5.577526136613443 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 3 EU = 19.20036250126848 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 2 EU = 19.200362589552363 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 1 EU = 7.836836146424337 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
  ROOT NODE 
 
 ]

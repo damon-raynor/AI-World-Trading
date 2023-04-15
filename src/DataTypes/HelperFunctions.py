@@ -203,15 +203,17 @@ Here's my State Quality Function. Here's how I came up with it:
 
 def calc_state_quality(country: Dict, weights: Dict):
     
-    # checks to see if my goal ratios are true. >= 1 for electronics and >= .5 for housing. this assumes that the country population cannot change. 
-    excessHousing = (country["Housing"] - country["Population"] / 2) if (country["Housing"] / country["Population"] >= .5) else 0
-    excessElectronics = (country["Electronics"] - country["Population"]) if country["Electronics"] / (country["Population"] >= 1) else 0
-    
     #adds all waste up.
     waste = (weights["MetallicAlloyWaste"]*country["MetallicAlloyWaste"] + weights["ElectronicWaste"]*country["ElectronicWaste"] + weights["HousingWaste"]*country["HousingWaste"])
     
     # state quality is calculated by summing over the ratio of housing:population, electronics:population and the additional of all resources it has multiplied by its respective weight.
-    state_quality = (country["Housing"] / country["Population"]) + (country["Electronics"] / country["Population"]) + (weights["MetallicElements"]*country["MetallicElements"]) + (weights["MetallicAlloys"]*country["MetallicAlloys"]) + weights["Housing"]*excessHousing + weights["Electronics"]*excessElectronics - waste
+    state_quality = ((country["Housing"] / country["Population"] - 2) 
+                     + (country["Electronics"] / country["Population"] - 1) 
+                     + (weights["MetallicElements"]*country["MetallicElements"]) 
+                     + (weights["MetallicAlloys"]*country["MetallicAlloys"]) 
+                     + (weights["Housing"] * country["Housing"])
+                     + (weights["Electronics"] *  country["Electronics"])
+                     - waste)
     
     return state_quality
 
@@ -221,7 +223,7 @@ def calc_undiscounted_reward(future_node_state_quality: float, root_state_qualit
 
 # here i dont know where the time stamp is going to come from. maybe this is inside of the Node Class???
 def calc_discounted_reward(undiscounted_reward, N):
-    y = .5
+    y = .7
     return y**N * undiscounted_reward
 
 def calc_prob_of_accept(discounted_reward):
@@ -234,7 +236,7 @@ def calc_schedule_probability(probs:List):
     return prod(probs)
 
 def expected_utility(future_node_state_quality, root_state_quality, old_schedule_prob, N):
-    C = -.5
+    C = -.2
 
     undiscounted_reward = calc_undiscounted_reward(future_node_state_quality, root_state_quality)
     discounted_reward = calc_discounted_reward(undiscounted_reward, N)

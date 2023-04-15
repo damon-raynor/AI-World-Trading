@@ -16,6 +16,7 @@ def country_scheduler(your_country_name :str, resource_filename :str, initial_st
     initial_state = HelperFunctions.read_initial_state(initial_state_filename)
 
     # create root node
+    
     root_node = Node(initial_state, your_country_name, None, None, 0, resource_weights)
 
     # Create Implicit Graph. first argument is the root node created using the initial state.
