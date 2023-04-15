@@ -204,7 +204,9 @@ Here's my State Quality Function. Here's how I came up with it:
 def calc_state_quality(country: Dict, weights: Dict):
     
     #adds all waste up.
-    waste = (weights["MetallicAlloyWaste"]*country["MetallicAlloyWaste"] + weights["ElectronicWaste"]*country["ElectronicWaste"] + weights["HousingWaste"]*country["HousingWaste"])
+    waste = (weights["MetallicAlloyWaste"]*country["MetallicAlloyWaste"] 
+             + weights["ElectronicWaste"]*country["ElectronicWaste"] 
+             + weights["HousingWaste"]*country["HousingWaste"])
     
     # state quality is calculated by summing over the ratio of housing:population, electronics:population and the additional of all resources it has multiplied by its respective weight.
     state_quality = ((country["Housing"] / country["Population"] - 2) 
