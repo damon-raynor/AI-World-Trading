@@ -24,9 +24,9 @@ def country_scheduler(your_country_name :str, resource_filename :str, initial_st
 
     # search using BreadthFirstSearch 
     solutions = implicit_search.search(BreadthFirstSearch(False))
-
+    
     # we create the output schedule file here.
     HelperFunctions.create_output_schedule(output_schedule_filename, solutions, action_preconditions)
     # HelperFunctions.print_output_schedule(solutions, action_preconditions)
 
-country_scheduler('Damon','resource_weights.csv', 'initial_world_state.csv', 'output_scheduler.txt', 2, 15000)
+country_scheduler('Damon','resource_weights.csv', 'initial_world_state.csv', 'output_scheduler.txt', 3, 15000)

@@ -146,29 +146,62 @@ from src.SearchStrategies import BreadthFirstSearch
 
 # create_output_schedule(solutions)
 
-def add(list, num) -> list:
-    for idx, number in enumerate(list):
-        if num > number:
-            if len(list) < 3:
-                list.insert(idx, num)
-                return list
-            else: 
-                list.pop()
-                list.insert(idx, num)
-                return list
-    list.append(num)
-    return list
+action_preconditions = {'metallicAlloys': Parser.parse('alloys.tmpl'),
+                      'housing': Parser.parse('housing.tmpl'),
+                      'electronics': Parser.parse('electronics.tmpl')}
 
-l = []
-print(l)
+resource_weights = HelperFunctions.read_resources('resource_weights.csv')
 
-l = add(l,5)
-print(l)
-l = add(l,6)
-print(l)
-l = add(l,2)
-print(l)
-l = add(l,10)
-print(l)
-l = add(l, 5.5)
-print(l)
+initial_state = HelperFunctions.read_initial_state('initial_world_state.csv')
+second_state = Action("Damon","transfer",HelperFunctions.transfer,"Erewhon","Damon","MetallicElements", 50).apply(initial_state, action_preconditions)
+third_state = Action("Damon","transfer",HelperFunctions.transfer,"Brobdingnag","Damon","MetallicElements", 30).apply(second_state, action_preconditions)
+fourth_state = Action("Damon","transfer",HelperFunctions.transfer,"Dinotopia","Damon","MetallicElements", 20).apply(third_state, action_preconditions)
+
+t_state = Action("Damon","transform",HelperFunctions.transform,None,None, "MetallicAlloys",10).apply(initial_state, action_preconditions)
+
+print(initial_state)
+print("\n")
+print(second_state)
+print("\n")
+print(third_state)
+print("\n")
+print(fourth_state)
+print("\n")
+
+init_sq = HelperFunctions.calc_state_quality(initial_state["Damon"], resource_weights)
+
+t_sq = HelperFunctions.calc_state_quality(t_state["Damon"], resource_weights)
+t_R = HelperFunctions.calc_undiscounted_reward(t_sq, init_sq)
+t_DR = HelperFunctions.calc_discounted_reward(t_R, 1)
+t_prob = HelperFunctions.calc_prob_of_accept(t_DR)
+t_sch_prob = HelperFunctions.calc_schedule_probability([t_prob])
+t_eu = (t_sch_prob * t_DR) + ((1-t_sch_prob) * -.2)
+
+second_sq = HelperFunctions.calc_state_quality(second_state["Damon"], resource_weights)
+sec_R = HelperFunctions.calc_undiscounted_reward(second_sq, init_sq)
+sec_DR = HelperFunctions.calc_discounted_reward(sec_R, 1)
+sec_prob = HelperFunctions.calc_prob_of_accept(sec_DR)
+sec_sch_prob = HelperFunctions.calc_schedule_probability([sec_prob])
+sec_eu = (sec_sch_prob * sec_DR) + ((1-sec_sch_prob) * -.2)
+
+third_sq = HelperFunctions.calc_state_quality(third_state["Damon"], resource_weights)
+third_R = HelperFunctions.calc_undiscounted_reward(third_sq, init_sq)
+third_DR = HelperFunctions.calc_discounted_reward(third_R, 2)
+third_prob = HelperFunctions.calc_prob_of_accept(third_DR)
+third_sch_prob = HelperFunctions.calc_schedule_probability([sec_prob,third_prob])
+third_eu = (third_sch_prob * third_DR) + ((1-third_sch_prob) * -.2)
+
+fourth_sq = HelperFunctions.calc_state_quality(fourth_state["Damon"], resource_weights)
+fourth_R = HelperFunctions.calc_undiscounted_reward(fourth_sq, init_sq)
+fourth_DR = HelperFunctions.calc_discounted_reward(fourth_R, 3)
+fourth_prob = HelperFunctions.calc_prob_of_accept(fourth_DR)
+fourth_sch_prob = HelperFunctions.calc_schedule_probability([sec_prob,third_prob,fourth_prob])
+fourth_eu = (fourth_sch_prob * fourth_DR) + ((1-fourth_sch_prob) * -.2)
+
+print('2nd sq is: ',second_sq)
+print(sec_eu)
+print(third_eu)
+print(fourth_eu)
+print("\n")
+print('transform sq is: ',t_sq)
+print(t_eu)

@@ -1,18 +1,43 @@
 [
 
- Depth = 1 EU = 6.641147404032432 (transfer  Erewhon  Damon ((MetallicElements  50))) 
+ Depth = 3 EU = 3.3828397862132173 (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 2 EU = 3.064259960219315 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 1 EU = 2.244327468003572 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
- Depth = 1 EU = 5.293123499534451 (transfer  Erewhon  Damon ((MetallicElements  40))) 
+ Depth = 3 EU = 3.3308604082921387 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 2 EU = 3.064259960219315 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 1 EU = 2.244327468003572 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
- Depth = 1 EU = 3.913894134590867 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 3 EU = 3.285163738352357 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 2 EU = 2.646867055878596 (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 1 EU = 2.244327468003572 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
- Depth = 1 EU = 3.913894134590867 (transfer  Erewhon  Damon ((MetallicElements  30))) 
+ Depth = 3 EU = 3.216430329024989 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 2 EU = 2.581535019043407 (transfer  Dinotopia  Damon ((MetallicElements  20))) 
+ Depth = 1 EU = 2.244327468003572 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
- Depth = 1 EU = 2.4730265464028625 (transfer  Erewhon  Damon ((MetallicElements  20))) 
+ Depth = 3 EU = 2.961100432527496 (transform  Damon
+                                        (INPUTS (Population 4)
+                                               (MetallicElements 8)))
+                                        (OUTPUTS (Population 4)
+                                               (MetallicAlloys 4)
+                                               (MetallicAlloyWaste 4)) 
+ Depth = 2 EU = 3.064259960219315 (transfer  Brobdingnag  Damon ((MetallicElements  30))) 
+ Depth = 1 EU = 2.244327468003572 (transfer  Erewhon  Damon ((MetallicElements  50))) 
  ROOT NODE 
 
 ]

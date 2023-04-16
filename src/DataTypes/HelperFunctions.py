@@ -211,11 +211,12 @@ def calc_state_quality(country: Dict, weights: Dict):
     # state quality is calculated by summing over the ratio of housing:population, electronics:population and the additional of all resources it has multiplied by its respective weight.
     state_quality = ((country["Housing"] / country["Population"] - 2) 
                      + (country["Electronics"] / country["Population"] - 1) 
-                     + (weights["MetallicElements"]*country["MetallicElements"]) 
+                     + (weights["MetallicElements"]*country["MetallicElements"])
+                     + (weights["Timber"]*country["Timber"]) 
                      + (weights["MetallicAlloys"]*country["MetallicAlloys"]) 
                      + (weights["Housing"] * country["Housing"])
                      + (weights["Electronics"] *  country["Electronics"])
-                     - waste)
+                     + waste)
     
     return state_quality
 
@@ -225,20 +226,20 @@ def calc_undiscounted_reward(future_node_state_quality: float, root_state_qualit
 
 # here i dont know where the time stamp is going to come from. maybe this is inside of the Node Class???
 def calc_discounted_reward(undiscounted_reward, N):
-    y = .7
+    y = .9
     return y**N * undiscounted_reward
 
 def calc_prob_of_accept(discounted_reward):
     L = 1
     k = 1
-    x0 = 0
+    x0 = 1
     return L / (1 + exp(-k*(discounted_reward - x0)))
 
 def calc_schedule_probability(probs:List):
     return prod(probs)
 
 def expected_utility(future_node_state_quality, root_state_quality, old_schedule_prob, N):
-    C = -.2
+    C = -.25
 
     undiscounted_reward = calc_undiscounted_reward(future_node_state_quality, root_state_quality)
     discounted_reward = calc_discounted_reward(undiscounted_reward, N)
@@ -277,7 +278,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                 all_text += text
             elif node.PARENT_ACTION.ACTION_TYPE == 'transform':
                 resource = (node.PARENT_ACTION.DESIRED_RESOURCE)
-                if resource == "housing":
+                if resource == "Housing":
                     inputs =("(Population " + str((action_preconditions["housing"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (MetallicElements " + str((action_preconditions["housing"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (Timber " + str((action_preconditions["housing"].inputs["Timber"] * node.PARENT_ACTION.QTY)) + ")"
@@ -290,7 +291,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                                         (OUTPUTS {outputs}) \n"""
                     all_text += text
                 
-                elif resource == "electronics": 
+                elif resource == "Electronics": 
                     inputs =("(Population " + str((action_preconditions["electronics"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (MetallicElements " + str((action_preconditions["electronics"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (MetallicAlloys " + str((action_preconditions["electronics"].inputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")")
@@ -301,7 +302,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                                         (INPUTS {inputs}))
                                         (OUTPUTS {outputs}) \n"""
                     all_text += text
-                elif resource == "metallicAlloys":
+                elif resource == "MetallicAlloys":
                     inputs =("(Population " + str((action_preconditions["metallicAlloys"].inputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (MetallicElements " + str((action_preconditions["metallicAlloys"].inputs["MetallicElements"] * node.PARENT_ACTION.QTY)) + ")")
                     outputs = ("(Population " + str((action_preconditions["metallicAlloys"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
