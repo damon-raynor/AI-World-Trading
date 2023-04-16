@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-from typing import List, Union
-from ..DataTypes import Action, Heuristic, Node, PriorityQueue, Solution, State
+from typing import List, Union, Dict
+from ..DataTypes import Node, PriorityQueue, HelperFunctions
 from .SearchStrategy import SearchStrategy
 
 class GreedyBestFirstSearch(SearchStrategy):
@@ -11,43 +11,36 @@ class GreedyBestFirstSearch(SearchStrategy):
    def __init__(self, tree_based_search: bool) -> None:
       super().__init__(tree_based_search)
 
-   def _expand(self, actions: List[Action], node: Node) -> List[Node]:
-      nodes: List[Node] = []
-      for action in actions:
-         next_state = action.apply(node.STATE)
+      self.initial_agent_state_quality = 0
+
+   def _expand(self, node: Node, agent_country, action_preconditions, resource_weights) -> List[Node]:
+      child_nodes: List[Node] = []
+      
+      list_of_actions = node.list_possible_actions(agent_country, action_preconditions)
+      
+      for action in list_of_actions:
+         next_state = action.apply(node.STATE, action_preconditions)
          if next_state is not None:
-            nodes.append(Node(next_state, node, action, node.PATH_COST + action.ACTION_COST))
-      return nodes
+            child_nodes.append(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights))
+      return child_nodes
 
-   def search_with_reached(self, initial_state: State, actions: List[Action], heuristic: Union[Heuristic, None], goals: List[State]) -> Solution:
-      visited = []
-      node = Node(initial_state, None, None, 0.0)
-      frontier = PriorityQueue(lambda node: heuristic.apply(node.STATE), True).add(node)
-      reached = { node.STATE: node }
+
+
+   def search(self, agent_country: str, root_node: Node, search_depth: int, action_preconditions: Dict, resource_weights: dict) -> List[Node]:
+      node = root_node
+      self.initial_agent_state_quality = node.AGENT_STATE_QUALITY
+      #TODO replace priorityqueue parameters with frontier max size passed in from the country scheduler
+      frontier = PriorityQueue(100).add(node)
+      solutions = PriorityQueue(5)
       while not frontier.is_empty():
-         node = frontier.pop()
-         visited.append(node.STATE)
-         if node.STATE in goals:
-            return Solution(node, visited)
-         for child in self._expand(node, agent_country, actions):
-            if child.STATE not in reached or child.PATH_COST < reached[child.STATE].PATH_COST:
-               reached[child.STATE] = child
-               frontier.add(child)
-      return Solution(None)
-
-   def search_without_reached(self, initial_state: State, actions: List[Action], heuristic: Union[Heuristic, None], goals: List[State]) -> Solution:
-      visited = []
-      node = Node(initial_state, None, None, 0.0)
-      frontier = PriorityQueue(lambda node: heuristic.apply(node.STATE), True).add(node)
-      while not frontier.is_empty():
-         node = frontier.pop()
-         visited.append(node.STATE)
-         if node.STATE in goals:
-            return Solution(node, visited)
-         for child in self._expand(node, agent_country, actions):
-            frontier.add(child)
-      return Solution(None)
-
-   def search(self, initial_state: State, actions: List[Action], heuristic: Union[Heuristic, None], goals: List[State]) -> Solution:
-      search_function = self.search_without_reached if self.TREE_BASED_SEARCH else self.search_with_reached
-      return search_function(initial_state, actions, heuristic, goals)
+         node = frontier.pop(0)
+         for child_node in self._expand(node, agent_country, action_preconditions, resource_weights):
+            child_node.schedule_probability, child_node.eu = HelperFunctions.expected_utility(child_node.AGENT_STATE_QUALITY, 
+                                                                                              self.initial_agent_state_quality, 
+                                                                                              node.schedule_probability, 
+                                                                                              child_node.NODE_DEPTH)
+            if child_node.NODE_DEPTH == search_depth:
+               solutions = solutions.add(child_node)
+            else:
+               frontier.add(child_node)
+      return solutions.queue

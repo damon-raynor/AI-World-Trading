@@ -22,7 +22,6 @@ class PriorityQueue(object):
             
             if len(self.queue) < self.max_size:
                self.queue.insert(idx, node)
-               print("length of solutions is: ",len(self.queue))
                return self
             else:
                popped = self.queue.pop()
@@ -30,12 +29,10 @@ class PriorityQueue(object):
                return self
       if not self.queue:
          self.queue.append(node)
-         print("length of solutions is: ",len(self.queue))
          return self 
       else:
          if len(self.queue) < self.max_size:
             self.queue.append(node)
-            print("length of solutions is: ",len(self.queue))
             return self
          else:
             return self
@@ -44,8 +41,8 @@ class PriorityQueue(object):
    def is_empty(self) -> bool:
       return len(self.queue) == 0
 
-   def pop(self) -> Node:
-      return self.queue.pop()
+   def pop(self, index: int) -> Node:
+      return self.queue.pop(index)
 
    def as_list(self) -> List[Node]:
       return [item for item, _ in self.queue][::-1]

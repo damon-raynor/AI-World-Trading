@@ -2,9 +2,9 @@
 Population,0,0
 MetallicElements,0.06,0
 Timber,0.02,0
-MetallicAlloys,0.29,0
-Electronics,0.33,0
-Housing,0.33,0
+MetallicAlloys,0.15,0
+Electronics,0.4,0
+Housing,0.4,0
 MetallicAlloyWaste,-0.01,0
 ElectronicWaste,-0.01,0
 HousingWaste,-0.01,0

@@ -23,5 +23,5 @@ class ImplicitGraph(object):
       self.ACTION_PRECONDITIONS = action_preconditions
       self.RESOURCE_WEIGHTS = resource_weights
 
-   def search(self, strategy: SearchStrategy) -> Solution:
+   def search(self, strategy: SearchStrategy) -> List[Node]:
       return strategy.search(self.AGENT_COUNTRY, self.ROOT_NODE, self.SEARCH_DEPTH, self.ACTION_PRECONDITIONS, self.RESOURCE_WEIGHTS)
