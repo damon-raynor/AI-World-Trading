@@ -20,19 +20,20 @@ class AlphaBetaSearch(SearchStrategy):
         util = -np.inf
         for action in node.list_possible_actions(agent_country, action_preconditions):
             next_state = action.apply(node.STATE, action_preconditions)
-            next_util, next_action = self.min_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
+            next_util = self.min_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
                                   agent_country, 
                                   alpha, 
                                   beta, 
                                   action_preconditions, 
+                                  resource_weights,
                                   max_depth)
             if next_util > util:
-                util, move = next_util, action
+                util = next_util
             if util >= beta:
-                return util, move
+                return util
             
             alpha = max(alpha, util)
-        return util, move
+        return util
 
     def min_value(self, node, agent_country, alpha, beta, action_preconditions, resource_weights, max_depth):
         if node.NODE_DEPTH == max_depth:
@@ -40,21 +41,22 @@ class AlphaBetaSearch(SearchStrategy):
         util = np.inf
         for action in node.list_possible_actions(agent_country, action_preconditions):
             next_state = action.apply(node.STATE, action_preconditions)
-            next_util, next_action = self.max_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
+            next_util = self.max_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
                                   agent_country, 
                                   alpha, 
                                   beta, 
-                                  action_preconditions, 
+                                  action_preconditions,
+                                  resource_weights, 
                                   max_depth)
             if next_util < util:
-                util, move = next_util, action
+                util= next_util
             if util <= alpha:
-                return util, move
+                return util
             
             beta = min(beta, util)
-        return util, move
+        return util
 
-    def search(self, node, agent_country, action_preconditions, resource_weights, max_depth):
+    def search(self, agent_country, node, max_depth, action_preconditions, resource_weights):
         """Search game to determine best action; use alpha-beta pruning.
         As in [Figure 5.7], this version searches all the way to the leaves."""
 
