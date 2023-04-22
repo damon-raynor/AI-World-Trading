@@ -1,10 +1,8 @@
 from __future__ import annotations
-from typing import Callable, List
-from .State import State
+from typing import Callable
 
 class Action(object):
 
-   AGENT_COUNTRY: str
    ACTION_TYPE: str
    ACTION_FUNCTION: Callable
    FROM_COUNTRY: str
@@ -12,9 +10,8 @@ class Action(object):
    DESIRED_RESOURCE: str
    QTY: int
 
-   def __init__(self, agent_country, action_type, action_function: Callable, from_country, to_country, resource, qty) -> None:
+   def __init__(self, action_type, action_function: Callable, from_country, to_country, resource, qty) -> None:
       super().__init__()
-      self.AGENT_COUNTRY = agent_country
       self.ACTION_TYPE = action_type
       self.ACTION_FUNCTION = action_function
       self.FROM_COUNTRY = from_country
@@ -23,8 +20,7 @@ class Action(object):
       self.QTY = qty
 
    def __str__(self):
-      return f"""agent country = {self.AGENT_COUNTRY}
-                 action type = {self.ACTION_TYPE}
+      return f"""action type = {self.ACTION_TYPE}
                  action function = {self.ACTION_FUNCTION}
                  from country = {self.FROM_COUNTRY}
                  to country = {self.TO_COUNTRY}
@@ -43,7 +39,7 @@ class Action(object):
       elif self.ACTION_TYPE == 'transform':
          # the below ACTION_FUNCTION callable is the HelperFunctions.transform() function
          return self.ACTION_FUNCTION(state, 
-                                     self.AGENT_COUNTRY, 
+                                     self.FROM_COUNTRY, 
                                      self.DESIRED_RESOURCE, 
                                      preconditions, 
                                      self.QTY)

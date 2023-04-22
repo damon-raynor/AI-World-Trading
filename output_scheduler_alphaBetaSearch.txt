@@ -1,0 +1,184 @@
+[
+
+ Depth = 5 
+          Agent State Quality = 7.4
+          Adversary State Quality = 2.84
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 24)
+                                               (MetallicAlloys 16)))
+                                        (OUTPUTS (Population 8)
+                                               (Electronics 16)
+                                               (ElectronicWaste 8)) 
+ Depth = 4 
+          Agent State Quality = 4.92
+          Adversary State Quality = 2.84
+                                        (transfer  free_pile  Brobdingnag ((Timber  10))) 
+ Depth = 3 
+          Agent State Quality = 4.92
+          Adversary State Quality = 2.6399999999999997
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 2 
+          Agent State Quality = 4.76
+          Adversary State Quality = 2.6399999999999997
+                                        (transfer  free_pile  Brobdingnag ((MetallicElements  10))) 
+ Depth = 1 
+          Agent State Quality = 4.76
+          Adversary State Quality = 2.04
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ ROOT NODE 
+
+ Depth = 5 
+          Agent State Quality = 6.6000000000000005
+          Adversary State Quality = 2.44
+                                        (transform  Damon
+                                        (INPUTS (Population 4)
+                                               (MetallicElements 12)
+                                               (MetallicAlloys 8)))
+                                        (OUTPUTS (Population 4)
+                                               (Electronics 8)
+                                               (ElectronicWaste 4)) 
+ Depth = 4 
+          Agent State Quality = 5.36
+          Adversary State Quality = 2.44
+                                        (transfer  free_pile  Brobdingnag ((Timber  10))) 
+ Depth = 3 
+          Agent State Quality = 5.36
+          Adversary State Quality = 2.2399999999999998
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 2 
+          Agent State Quality = 5.2
+          Adversary State Quality = 2.2399999999999998
+                                        (transfer  free_pile  Brobdingnag ((Timber  10))) 
+ Depth = 1 
+          Agent State Quality = 5.2
+          Adversary State Quality = 2.04
+                                        (transfer  free_pile  Damon ((MetallicElements  10))) 
+ ROOT NODE 
+
+ Depth = 5 
+          Agent State Quality = 6.2
+          Adversary State Quality = 2.84
+                                        (transform  Damon
+                                        (INPUTS (Population 4)
+                                               (MetallicElements 12)
+                                               (MetallicAlloys 8)))
+                                        (OUTPUTS (Population 4)
+                                               (Electronics 8)
+                                               (ElectronicWaste 4)) 
+ Depth = 4 
+          Agent State Quality = 4.96
+          Adversary State Quality = 2.84
+                                        (transfer  free_pile  Brobdingnag ((Timber  10))) 
+ Depth = 3 
+          Agent State Quality = 4.96
+          Adversary State Quality = 2.6399999999999997
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 2 
+          Agent State Quality = 4.8
+          Adversary State Quality = 2.6399999999999997
+                                        (transfer  free_pile  Brobdingnag ((MetallicElements  10))) 
+ Depth = 1 
+          Agent State Quality = 4.8
+          Adversary State Quality = 2.04
+                                        (transfer  free_pile  Damon ((Timber  10))) 
+ ROOT NODE 
+
+ Depth = 5 
+          Agent State Quality = 6.08
+          Adversary State Quality = 2.84
+                                        (transform  Damon
+                                        (INPUTS (Population 4)
+                                               (MetallicElements 12)
+                                               (MetallicAlloys 8)))
+                                        (OUTPUTS (Population 4)
+                                               (Electronics 8)
+                                               (ElectronicWaste 4)) 
+ Depth = 4 
+          Agent State Quality = 4.839999999999999
+          Adversary State Quality = 2.84
+                                        (transfer  free_pile  Brobdingnag ((Timber  10))) 
+ Depth = 3 
+          Agent State Quality = 4.839999999999999
+          Adversary State Quality = 2.6399999999999997
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 2 
+          Agent State Quality = 4.68
+          Adversary State Quality = 2.6399999999999997
+                                        (transfer  free_pile  Brobdingnag ((MetallicElements  10))) 
+ Depth = 1 
+          Agent State Quality = 4.68
+          Adversary State Quality = 2.04
+                                        (transform  Damon
+                                        (INPUTS (Population 4)
+                                               (MetallicElements 8)))
+                                        (OUTPUTS (Population 4)
+                                               (MetallicAlloys 4)
+                                               (MetallicAlloyWaste 4)) 
+ ROOT NODE 
+
+ Depth = 5 
+          Agent State Quality = 6.04
+          Adversary State Quality = 2.84
+                                        (transform  Damon
+                                        (INPUTS (Population 4)
+                                               (MetallicElements 12)
+                                               (MetallicAlloys 8)))
+                                        (OUTPUTS (Population 4)
+                                               (Electronics 8)
+                                               (ElectronicWaste 4)) 
+ Depth = 4 
+          Agent State Quality = 4.800000000000001
+          Adversary State Quality = 2.84
+                                        (transfer  free_pile  Brobdingnag ((Timber  10))) 
+ Depth = 3 
+          Agent State Quality = 4.800000000000001
+          Adversary State Quality = 2.6399999999999997
+                                        (transform  Damon
+                                        (INPUTS (Population 8)
+                                               (MetallicElements 16)))
+                                        (OUTPUTS (Population 8)
+                                               (MetallicAlloys 8)
+                                               (MetallicAlloyWaste 8)) 
+ Depth = 2 
+          Agent State Quality = 4.640000000000001
+          Adversary State Quality = 2.6399999999999997
+                                        (transfer  free_pile  Brobdingnag ((MetallicElements  10))) 
+ Depth = 1 
+          Agent State Quality = 4.640000000000001
+          Adversary State Quality = 2.04
+                                        (transform  Damon
+                                        (INPUTS (Population 2)
+                                               (MetallicElements 4)))
+                                        (OUTPUTS (Population 2)
+                                               (MetallicAlloys 2)
+                                               (MetallicAlloyWaste 2)) 
+ ROOT NODE 
+
+]
+

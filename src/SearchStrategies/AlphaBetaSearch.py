@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-from typing import List, Union, Dict
-from ..DataTypes import Node, PriorityQueue, HelperFunctions
+from typing import List, Dict
+from ..DataTypes import Node, PriorityQueue
 from .SearchStrategy import SearchStrategy
 
+import logging
 import numpy as np
 
 class AlphaBetaSearch(SearchStrategy):
@@ -14,66 +15,111 @@ class AlphaBetaSearch(SearchStrategy):
         super().__init__(tree_based_search)
     
     # Functions used by alpha_beta
-    def max_value(self, node, agent_country, alpha, beta, action_preconditions, resource_weights, max_depth):
+    def max_value(self, node, agent_country, adversary, alpha, beta, action_preconditions, resource_weights, max_depth):
         if node.NODE_DEPTH == max_depth:
-            return node.AGENT_STATE_QUALITY
-        util = -np.inf
-        for action in node.list_possible_actions(agent_country, action_preconditions):
+            return node
+        
+        util = {'utility': -np.inf,
+                'node': None}
+        
+        for action in node.list_possible_actions(agent_country, action_preconditions, adversarial = True):
             next_state = action.apply(node.STATE, action_preconditions)
-            next_util = self.min_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
+            next_node = Node(next_state, 
+                             agent_country, 
+                             node, 
+                             action, 
+                             node.NODE_DEPTH + 1, 
+                             resource_weights,
+                             adversary)
+            best_child_node = self.min_value(next_node, 
                                   agent_country, 
+                                  adversary,
                                   alpha, 
                                   beta, 
                                   action_preconditions, 
                                   resource_weights,
                                   max_depth)
-            if next_util > util:
-                util = next_util
-            if util >= beta:
-                return util
+            if best_child_node == None:
+                logging.debug('the  best child node is a NoneType')
+                return next_node
             
-            alpha = max(alpha, util)
-        return util
+            if best_child_node.AGENT_STATE_QUALITY > util['utility']:
+                util['utility'] = best_child_node.AGENT_STATE_QUALITY
+                util['node'] = best_child_node
+            if util['utility'] >= beta:
+                return util['node']
+            
+            alpha = max(alpha, util['utility'])
+        return util['node']
 
-    def min_value(self, node, agent_country, alpha, beta, action_preconditions, resource_weights, max_depth):
+    def min_value(self, node, agent_country, adversary, alpha, beta, action_preconditions, resource_weights, max_depth):
         if node.NODE_DEPTH == max_depth:
-            return node.AGENT_STATE_QUALITY
-        util = np.inf
-        for action in node.list_possible_actions(agent_country, action_preconditions):
+            return node
+        util = {'utility': np.inf,
+                'node': None}
+        
+        for action in node.list_possible_actions(adversary, action_preconditions, adversarial = True):
             next_state = action.apply(node.STATE, action_preconditions)
-            next_util = self.max_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
+            next_node = Node(next_state, 
+                             agent_country, 
+                             node, 
+                             action, 
+                             node.NODE_DEPTH + 1, 
+                             resource_weights,
+                             adversary)
+            best_child_node = self.max_value(next_node, 
                                   agent_country, 
+                                  adversary,
                                   alpha, 
                                   beta, 
                                   action_preconditions,
                                   resource_weights, 
                                   max_depth)
-            if next_util < util:
-                util= next_util
-            if util <= alpha:
-                return util
+            if best_child_node == None:
+                logging.debug('the  best child node is a NoneType')
+                return next_node
             
-            beta = min(beta, util)
-        return util
+            if best_child_node.AGENT_STATE_QUALITY < util['utility']:
+                util['utility'] = best_child_node.AGENT_STATE_QUALITY
+                util['node'] = best_child_node
+            if  util['utility'] <= alpha:
+                return util['node']
+            
+            beta = min(beta, util['utility'])
+        return util['node']
 
-    def search(self, agent_country, node, max_depth, action_preconditions, resource_weights):
-        """Search game to determine best action; use alpha-beta pruning.
-        As in [Figure 5.7], this version searches all the way to the leaves."""
+    def search(self, agent_country, root_node, max_depth, action_preconditions, resource_weights):
+        """Search game to determine best action; use alpha-beta pruning."""
+
+        best_children_nodes = PriorityQueue(5) # container for top 5 solutions ordered by priority
+        best_children_nodes.adversarial = True # sorts priority queue off state quality vs eu
+        adversary = root_node.identify_adversary() # identify adversary. assumes there's only one.
 
         # Body of alpha_beta_search:
         alpha = -np.inf
         beta = np.inf
-        best_action = None
-        for action in node.list_possible_actions(agent_country, action_preconditions):
-            next_state = action.apply(node.STATE, action_preconditions)
-            util = self.min_value(Node(next_state, agent_country, node, action, node.NODE_DEPTH + 1, resource_weights), 
+
+        for action in root_node.list_possible_actions(agent_country, action_preconditions, adversarial = True):
+            next_state = action.apply(root_node.STATE, action_preconditions)
+            next_node = Node(next_state, 
+                             agent_country, 
+                             root_node, 
+                             action, 
+                             root_node.NODE_DEPTH + 1, 
+                             resource_weights,
+                             adversary)
+            best_child_node = self.min_value(next_node, 
                                   agent_country, 
+                                  adversary,
                                   alpha, 
                                   beta, 
                                   action_preconditions,
                                   resource_weights, 
                                   max_depth)
-            if util > alpha:
-                alpha = util
-                best_action = action
-        return best_action
+            
+            if best_child_node.AGENT_STATE_QUALITY > alpha:
+                alpha = best_child_node.AGENT_STATE_QUALITY
+            
+            best_children_nodes.add(best_child_node)
+
+        return best_children_nodes.queue

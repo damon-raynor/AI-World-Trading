@@ -53,10 +53,16 @@ def transfer(state: dict, from_country: str, to_country: str, resource: str, qty
         new_state[to_country][resource] += qty
         return new_state
 
-def list_possible_transfers(state, agent_country) -> list[Action]:
+def list_possible_transfers(state, country, adversarial=False) -> list[Action]:
     valid_transfers = [] # collection of possible transfers (tuples) in the form of (from_country, to_country, resource, qty)
         
     for from_country in state.keys(): # identify possible transfers from each country
+        
+        # if we are running alphaBetaSearch then the assumption is that countries can only take from the free_pile.
+        # code implementation suggests that "free_pile" is a country and is transferring to the real countries.
+        if adversarial and from_country != 'free_pile':
+            continue
+
         for resource in state[from_country].keys(): # see if they can transfer each resource category
             if resource != "Population": # no transferring population
                 valid = True
@@ -67,27 +73,31 @@ def list_possible_transfers(state, agent_country) -> list[Action]:
                     
                     if transfer_isValid(state, from_country, resource, qty):
                         
-                        if from_country != agent_country:
-                            transfer_action = Action(agent_country, 
-                                                     'transfer', 
+                        if from_country != country:
+                            transfer_action = Action('transfer', 
                                                      transfer, 
                                                      from_country, 
-                                                     agent_country, 
+                                                     country, 
                                                      resource, 
                                                      qty)
-                            valid_transfers.append(transfer_action) # adds a possible transfer from another country to the agent_country
+                            valid_transfers.append(transfer_action) # adds a possible transfer from another country to the country
                         
-                        elif from_country == agent_country:
-                            for to_country in state.keys(): # adds a possible transfer from the agent_country to all other countries
-                                if to_country != agent_country:
-                                    transfer_action = Action(agent_country, 
-                                                     'transfer', 
+                        elif from_country == country:
+                            for to_country in state.keys(): # adds a possible transfer from the country to all other countries
+                                if to_country != country:
+                                    transfer_action = Action('transfer', 
                                                      transfer, 
-                                                     agent_country, 
+                                                     country, 
                                                      to_country, 
                                                      resource, 
                                                      qty)
                                     valid_transfers.append(transfer_action)  
+                        
+                        # the rules for alphaBetaSearch is that each country can only
+                        # take 10 resources from the free pile in one turn. the following 
+                        # if statement ensures that.
+                        if adversarial:
+                            break
                     
                     else: valid = False
                     
@@ -164,7 +174,7 @@ def transform(state: dict, country: str, desired_mfg_resource: str, precondition
             
             return new_state
         
-def list_possible_transforms(state: dict, agent_country: str, preconditions: dict) -> list[Action]:
+def list_possible_transforms(state: dict, country: str, preconditions: dict) -> list[Action]:
     valid_transforms: list[Action] = [] # collection of possible transforms (Action) in the form of (desired_resource, num_of_transforms)
     mfg_resources = ['Housing', "MetallicAlloys", "Electronics"]
     for desired_resource in mfg_resources:
@@ -173,8 +183,13 @@ def list_possible_transforms(state: dict, agent_country: str, preconditions: dic
         
         while valid:
             
-            if transform_isValid(state, agent_country, desired_resource, preconditions, num_of_transforms):
-                transform_action = Action(agent_country, 'transform', transform, None, None, desired_resource, num_of_transforms)
+            if transform_isValid(state, country, desired_resource, preconditions, num_of_transforms):
+                transform_action = Action('transform', 
+                                          transform, 
+                                          country, 
+                                          None, 
+                                          desired_resource, 
+                                          num_of_transforms)
                 valid_transforms.append(transform_action)
                 num_of_transforms *= 2
             
@@ -185,20 +200,8 @@ def list_possible_transforms(state: dict, agent_country: str, preconditions: dic
 
 """ 
 Here's my State Quality Function. Here's how I came up with it:
-    Do we have enough housing for the population?
-        ○ The goal is to have 1 house per 2 people
-            § What's the ratio of ppl to houses? (houses/people)
-                □ Ideally want it to >= .5
-	Is our waste low?
-		○ The goal is to have minimum waste.
-			§ Each piece of waste is negatively weighted
-	Are we technologically advanced?
-		○ The goal is to have at least 1 electronic per person. The more the better.
-			§ What's the ratio of people to electronics? (electronics/people) 
-				□ Ideally want it to be >= 1
-	Do we have enough raw resources to trade with other countries?
-		○ The goal is to make sure my people are good and that we are technologically advanced. Then I want to be able to have resources that other countries want.
-			§ Is housing satisfied? Are we advanced? If the answers are yes to both questions, then we can add additional points for each extra resource we have 
+    The resource weights identifies which resources are more valuable than others.
+    the health of the country is based off if they have adequate housing and electronics
 """
 
 def calc_state_quality(country: Dict, weights: Dict):
@@ -209,9 +212,7 @@ def calc_state_quality(country: Dict, weights: Dict):
              + weights["HousingWaste"]*country["HousingWaste"])
     
     # state quality is calculated by summing over the ratio of housing:population, electronics:population and the additional of all resources it has multiplied by its respective weight.
-    state_quality = ((country["Housing"] / country["Population"] - 2) 
-                     + (country["Electronics"] / country["Population"] - 1) 
-                     + (weights["MetallicElements"]*country["MetallicElements"])
+    state_quality = ((weights["MetallicElements"]*country["MetallicElements"])
                      + (weights["Timber"]*country["Timber"]) 
                      + (weights["MetallicAlloys"]*country["MetallicAlloys"]) 
                      + (weights["Housing"] * country["Housing"])
@@ -253,7 +254,7 @@ def expected_utility(future_node_state_quality, root_state_quality, old_schedule
 
 
 
-def create_output_schedule(file_name: str, solutions: list, action_preconditions: dict):
+def create_output_schedule(file_name: str, solutions: list, action_preconditions: dict, adversarial: bool=False):
     file = open(file_name, 'w')
     queue = []
     all_text = f""
@@ -273,8 +274,10 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
             text = f""" ROOT NODE \n\n""" 
             all_text += text
         else:
+            score = f"\n          Agent State Quality = {node.AGENT_STATE_QUALITY}\n          Adversary State Quality = {calc_state_quality(node.STATE[node.adversary],node.RESOURCE_WEIGHTS)}\n                                       "if adversarial else f"EU = {node.eu}"
+            
             if node.PARENT_ACTION.ACTION_TYPE == 'transfer':
-                text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}  {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
+                text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}  {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
                 all_text += text
             elif node.PARENT_ACTION.ACTION_TYPE == 'transform':
                 resource = (node.PARENT_ACTION.DESIRED_RESOURCE)
@@ -286,7 +289,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                     outputs = ("(Population " + str((action_preconditions["housing"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (Housing " + str((action_preconditions["housing"].outputs["Housing"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (HousingWaste " + str((action_preconditions["housing"].outputs["HousingWaste"] * node.PARENT_ACTION.QTY)) + ")")
-                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                    text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}
                                         (INPUTS {inputs}))
                                         (OUTPUTS {outputs}) \n"""
                     all_text += text
@@ -298,7 +301,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                     outputs = ("(Population " + str((action_preconditions["electronics"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (Electronics " + str((action_preconditions["electronics"].outputs["Electronics"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (ElectronicWaste " + str((action_preconditions["electronics"].outputs["ElectronicWaste"] * node.PARENT_ACTION.QTY)) + ")")
-                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                    text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}
                                         (INPUTS {inputs}))
                                         (OUTPUTS {outputs}) \n"""
                     all_text += text
@@ -308,7 +311,7 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
                     outputs = ("(Population " + str((action_preconditions["metallicAlloys"].outputs["Population"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (MetallicAlloys " + str((action_preconditions["metallicAlloys"].outputs["MetallicAlloys"] * node.PARENT_ACTION.QTY)) + ")"
                             + "\n                                               (MetallicAlloyWaste " + str((action_preconditions["metallicAlloys"].outputs["MetallicAlloyWaste"] * node.PARENT_ACTION.QTY)) + ")")
-                    text = f""" Depth = {node.NODE_DEPTH} EU = {node.eu} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.AGENT_COUNTRY}
+                    text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}
                                         (INPUTS {inputs}))
                                         (OUTPUTS {outputs}) \n"""
                     all_text += text

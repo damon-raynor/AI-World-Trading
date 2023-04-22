@@ -2,12 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-from typing import List, Union, Dict
+from typing import List, Dict
 from ..DataTypes import Node
-from ..DataTypes.Action import Action
-from ..DataTypes.Heuristic import Heuristic
-from ..DataTypes.Solution import Solution
-from ..DataTypes.State import State
 
 class SearchStrategy(object):
 
@@ -17,5 +13,5 @@ class SearchStrategy(object):
       super().__init__()
       self.TREE_BASED_SEARCH = tree_based_search
 
-   def search(self, root_node: Node, search_depth: int, action_preconditions: Dict) -> Solution:
+   def search(self, root_node: Node, search_depth: int, action_preconditions: Dict) -> List[Node]:
       raise NotImplementedError('ERROR: This method must be overridden by a concrete search strategy implementation')

@@ -26,9 +26,9 @@ def country_scheduler(your_country_name :str, resource_filename :str, initial_st
     solutions = implicit_search.search(search_strategy)
     
     # we create the output schedule file here.
-    HelperFunctions.create_output_schedule(output_schedule_filename, solutions, action_preconditions)
+    HelperFunctions.create_output_schedule(output_schedule_filename, solutions, action_preconditions, adversarial=True)
     # HelperFunctions.print_output_schedule(solutions, action_preconditions)
 
 # country_scheduler('Damon','resource_weights.csv', 'initial_world_state.csv', 'output_scheduler_GreedyBestFirstSearch.txt', 100, None, GreedyBestFirstSearch(False))
 
-country_scheduler('Damon','resource_weights.csv', 'initial_world_state.csv', 'output_scheduler_GreedyBestFirstSearch.txt', 3, None, AlphaBetaSearch(False))
+country_scheduler('Damon','resource_weights.csv', 'adversarial_initial_world_state.csv', 'output_scheduler_alphaBetaSearch.txt', 5, None, AlphaBetaSearch(False))

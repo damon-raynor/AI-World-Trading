@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-from typing import List, Optional, Union, Dict
-from ..DataTypes import Action, Node, Heuristic, Solution
+from typing import List, Dict
+from ..DataTypes import Node
 from ..DataTypes.Parser import TransformTemplate
 from ..SearchStrategies import SearchStrategy
 

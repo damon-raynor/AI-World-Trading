@@ -2,23 +2,30 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import annotations
-from typing import Callable, List, Tuple
+from typing import List
 from .Node import Node
-import operator
 
 class PriorityQueue(object):
 
    queue: List[Node]
    max_size: int
+   adversarial: bool
 
    def __init__(self, max_size: int) -> None:
       super().__init__()
       self.queue = []
       self.max_size = max_size
+      self.adversarial = False
 
    def add(self, node: Node) -> PriorityQueue:
+      
       for idx, n in enumerate(self.queue):
-         if node.eu > n.eu:
+         
+         if self.adversarial:
+            x = node.AGENT_STATE_QUALITY > n.AGENT_STATE_QUALITY
+         else: x = node.eu > n.eu
+         
+         if x:
             
             if len(self.queue) < self.max_size:
                self.queue.insert(idx, node)
