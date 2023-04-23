@@ -43,3 +43,10 @@ class Action(object):
                                      self.DESIRED_RESOURCE, 
                                      preconditions, 
                                      self.QTY)
+      
+      elif self.ACTION_TYPE == 'steal':
+         # the below ACTION_FUNCTION callable is the HelperFunctions.steal_random_resource() function
+         self.DESIRED_RESOURCE, self.QTY, new_state = self.ACTION_FUNCTION(state, 
+                                                                           self.FROM_COUNTRY, 
+                                                                           self.TO_COUNTRY)
+         return new_state

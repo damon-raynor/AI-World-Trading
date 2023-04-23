@@ -2,7 +2,7 @@ from __future__ import annotations
 from .Action import Action
 from uuid import UUID, uuid4
 from random import shuffle
-from .HelperFunctions import list_possible_transfers, list_possible_transforms, calc_state_quality
+from .HelperFunctions import list_possible_transfers, list_possible_transforms, calc_state_quality, steal_isValid, steal_random_resource
 
 class Node(object):
 
@@ -53,14 +53,24 @@ class Node(object):
             return country
 
 
-# go to 4.2 Programming comments part 1. 09:10 
+   # Adversarial determines if the alphaBetaSearch algorithm is being used.
    def list_possible_actions(self, country, preconditions, adversarial=False) -> list[Action]:
       possible_actions = []
+      
       possible_transfers = list_possible_transfers(self.STATE, country, adversarial)
-      possible_transforms = list_possible_transforms(self.STATE, country, preconditions)
       possible_actions += possible_transfers
+      
+      possible_transforms = list_possible_transforms(self.STATE, country, preconditions)
       possible_actions += possible_transforms
-      # shuffle(possible_actions)
+      
+      if adversarial:
+         if steal_isValid(self.STATE, country):
+            # Note: "None"s are present since the resource and qty is random. the steal_random_resource function will assign the random value when executed.
+            steal_action = Action('steal', steal_random_resource, country, self.identify_adversary(), None, None) 
+            # Note: There is only 1 steal per turn until your steals run out.
+            possible_actions.append(steal_action)
+            shuffle(possible_actions)
+
       print(len(possible_actions))
       #TODO take a subset of transfers
       return possible_actions

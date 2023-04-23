@@ -1,5 +1,15 @@
-l = [1,2,3,4,5]
+from src.DataTypes import PriorityQueue
 
-l.append(6)
+a = 1
+b = 2
+c = 3
+d = 4
 
-print(l)
+queue = PriorityQueue(3)
+
+queue.add(a)
+queue.add(b)
+queue.add(c)
+print(queue.queue)
+queue.add(d)
+print(queue.queue)
