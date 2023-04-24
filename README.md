@@ -2,7 +2,9 @@
 CS 5260-50 | Artificial Intelligence | Damon Raynor
 
 ## Running the Project
-To run the project, navigate to the "ProjectPartOne.py" file and run it as a script. it contains the country scheduler function and then calls the function near the bottom of the script.
+To run the project, navigate to the "ProjectPartTwo.py" file and run it as a script. it contains the country scheduler function and then calls the function near the bottom of the script.
+
+You will need numpy installed to run alphaBetaSearch.
 
 
 ## Current Progress 
