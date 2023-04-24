@@ -77,7 +77,7 @@ def list_possible_transfers(state, country, adversarial=False) -> list[Action]:
             continue
 
         for resource in state[from_country].keys(): # see if they can transfer each resource category
-            if resource != "Population" or "Steals": # no transferring population or Steals
+            if not (resource == "Population" or resource =="Steals"): # no transferring population or Steals
                 valid = True
                 multiple = 1
                             
@@ -209,32 +209,49 @@ def list_possible_transforms(state: dict, country: str, preconditions: dict) -> 
     
     return valid_transforms
 
-def steal_isValid(state: Dict, country: str) -> bool:
+def steal_isValid(state: Dict, perp_country: str, victim_country: str):
+    if state[perp_country]['Steals'] > 0 and perp_country != victim_country:
+        
+        has_steals = True
+        
+        # identify all resources
+        all_resources = list(state[victim_country].keys())
+        # these are the "resources" that are deemed not stealable
+        excluded_resources = ['Population', 'Steals', 'MetallicAlloyWaste', 'ElectronicWaste', 'HousingWaste']
+        # filter resource list to only the stealable ones
+        stealable_resources = [resource for resource in all_resources if resource not in excluded_resources]
+        # output a random resource to steal
+        stolen_resource = random.choice(stealable_resources)
+        # output a random qty to steal between 1 - 10
+        qty = random.randint(1, 10)
+        
+        victim_has_resource = True if state[victim_country][stolen_resource] - qty > 0 else False
+        return [True, stolen_resource, qty] if has_steals and victim_has_resource else [False, None, None]
     
-    return True if state[country]['Steals'] > 0 else False
+    else: return [False, None, None]
 
-def steal_random_resource(state: Dict, perp_country: str, victim_country: str) -> List:
+def steal_random_resource(state: Dict, perp_country: str, victim_country: str, stolen_resource: str, rand_qty: int) -> List:
     # create new new state to be altered.
     new_state = copy.deepcopy(state)
+    actual_qty = state[victim_country][stolen_resource]
+
+    if rand_qty < actual_qty:
+        # update new state to reflect the steal
+        new_state[victim_country][stolen_resource] -= rand_qty
+        new_state[perp_country][stolen_resource] += rand_qty
+        
+        # subtract a steal from the country using this action
+        new_state[perp_country]['Steals'] -= 1
+        return [rand_qty, new_state]
     
-    # identify all resources
-    all_resources = list(state[victim_country].keys())
-    # these are the "resources" that are deemed not stealable
-    excluded_resources = ['Population', 'Steals', 'MetallicAlloyWaste', 'ElectronicWaste', 'HousingWaste']
-    # filter resource list to only the stealable ones
-    stealable_resources = [resource for resource in all_resources if resource not in excluded_resources]
-    # output a random resource to steal
-    stolen_resource = random.choice(stealable_resources)
-    # output a random qty to steal between 1 - 10
-    qty = random.randint(1, 10)
-    # update new state to reflect the steal
-    new_state[victim_country][stolen_resource] -= qty
-    new_state[perp_country][stolen_resource] += qty
+    else:
+        # update new state to reflect the steal
+        new_state[victim_country][stolen_resource] -= actual_qty
+        new_state[perp_country][stolen_resource] += actual_qty
 
-    # subtract a steal from the country using this action
-    new_state[perp_country]['Steals'] -= 1
-
-    return [stolen_resource, qty, new_state]
+        # subtract a steal from the country using this action
+        new_state[perp_country]['Steals'] -= 1
+        return [actual_qty, new_state]
 
 """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -315,17 +332,17 @@ def create_output_schedule(file_name: str, solutions: list, action_preconditions
         
     for node in queue:
         if node.PARENT_ACTION == None:
-            text = f""" ROOT NODE \n\n""" 
+            text = f""" ROOT NODE \n\n\n\n\n\n""" 
             all_text += text
         else:
             score = f"\n          Agent State Quality = {node.AGENT_STATE_QUALITY}\n          Adversary State Quality = {calc_state_quality(node.STATE[node.adversary],node.RESOURCE_WEIGHTS)}\n                                       "if adversarial else f"EU = {node.eu}"
             
             if node.PARENT_ACTION.ACTION_TYPE == 'transfer':
-                text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY} from {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
+                text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}  {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
                 all_text += text
             
             elif node.PARENT_ACTION.ACTION_TYPE == 'steal':
-                text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY}  {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
+                text = f""" Depth = {node.NODE_DEPTH} {score} ({node.PARENT_ACTION.ACTION_TYPE}  {node.PARENT_ACTION.FROM_COUNTRY} from {node.PARENT_ACTION.TO_COUNTRY} (({node.PARENT_ACTION.DESIRED_RESOURCE}  {node.PARENT_ACTION.QTY}))) \n"""
                 all_text += text
 
             elif node.PARENT_ACTION.ACTION_TYPE == 'transform':

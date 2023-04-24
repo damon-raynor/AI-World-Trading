@@ -53,7 +53,8 @@ class Node(object):
             return country
 
 
-   # Adversarial determines if the alphaBetaSearch algorithm is being used.
+   # Adversarial determines if the alphaBetaSearch algorithm is being used. This is a generic function that
+   # any country can use.
    def list_possible_actions(self, country, preconditions, adversarial=False) -> list[Action]:
       possible_actions = []
       
@@ -64,13 +65,22 @@ class Node(object):
       possible_actions += possible_transforms
       
       if adversarial:
-         if steal_isValid(self.STATE, country):
-            # Note: "None"s are present since the resource and qty is random. the steal_random_resource function will assign the random value when executed.
-            steal_action = Action('steal', steal_random_resource, country, self.identify_adversary(), None, None) 
-            # Note: There is only 1 steal per turn until your steals run out.
-            possible_actions.append(steal_action)
-            shuffle(possible_actions)
+         adversary = self.identify_adversary()
+         if country == adversary:
+            
+            isValid, stolen_resource, qty =  steal_isValid(self.STATE, adversary, country) # this is called if this function is looking for the list of possible actions for the adversary
+            
+            if isValid:
+               steal_action = Action('steal', steal_random_resource, adversary, country, stolen_resource, qty) # this is called if this function is looking for the list of possible actions for the adversary
+               possible_actions.append(steal_action)
+         else:
+            
+            isValid, stolen_resource, qty =  steal_isValid(self.STATE, country, adversary)
+         
+            if isValid:
+               steal_action = Action('steal', steal_random_resource, country, adversary, stolen_resource, qty)
+               possible_actions.append(steal_action) 
 
-      print(len(possible_actions))
+      # print(len(possible_actions))
       #TODO take a subset of transfers
       return possible_actions

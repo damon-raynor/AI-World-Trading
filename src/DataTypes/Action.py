@@ -45,8 +45,12 @@ class Action(object):
                                      self.QTY)
       
       elif self.ACTION_TYPE == 'steal':
-         # the below ACTION_FUNCTION callable is the HelperFunctions.steal_random_resource() function
-         self.DESIRED_RESOURCE, self.QTY, new_state = self.ACTION_FUNCTION(state, 
-                                                                           self.FROM_COUNTRY, 
-                                                                           self.TO_COUNTRY)
+         # the below ACTION_FUNCTION callable is the HelperFunctions.steal_random_resource() function.
+         qty, new_state = self.ACTION_FUNCTION(state, 
+                                          self.FROM_COUNTRY, 
+                                          self.TO_COUNTRY,
+                                          self.DESIRED_RESOURCE,
+                                          self.QTY)
+         # self.QTY is being updated just in case the actual held qty is less than the desired qty to be stolen 
+         self.QTY = qty if self.QTY != qty else self.QTY
          return new_state

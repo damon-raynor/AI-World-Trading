@@ -21,14 +21,15 @@ class AlphaBetaSearch(SearchStrategy):
         super().__init__(tree_based_search)
     
     # Functions used by alpha_beta
-    def _expand(self, agent_country, node, action_preconditions, resource_weights, adversary) -> PriorityQueue:
+    def _expand(self, agent_country: str, node: Node, action_preconditions, resource_weights, adversary: str, maximizer: bool) -> PriorityQueue:
         
+        active_country = agent_country if maximizer == True else adversary
         ordered_children_nodes_descending = PriorityQueue(None)
-        
+        ordered_children_nodes_descending.adversarial = True
         # The following for loop creates children nodes based on the list of possible actions from the root node
         # and orders them based on their state quality in a descending fashion (i.e. [5, 4, 3, 2, 1]).
         # the ordering of child nodes by state quality will optimize the pruning capabilities of this search strategy.
-        for action in node.list_possible_actions(agent_country, action_preconditions, adversarial = True):
+        for action in node.list_possible_actions(active_country, action_preconditions, adversarial = True):
             next_state = action.apply(node.STATE, action_preconditions)
             next_node = Node(next_state, 
                              agent_country, 
@@ -48,7 +49,7 @@ class AlphaBetaSearch(SearchStrategy):
         alpha_node = {'utility': -np.inf,
                 'node': None}
         
-        ordered_children_nodes_descending = self._expand(agent_country, node, action_preconditions, resource_weights, adversary)
+        ordered_children_nodes_descending = self._expand(agent_country, node, action_preconditions, resource_weights, adversary, maximizer=True)
 
         for node in ordered_children_nodes_descending.queue:
             best_child_node = self.min_value(node, 
@@ -78,7 +79,7 @@ class AlphaBetaSearch(SearchStrategy):
         beta_node = {'utility': np.inf,
                 'node': None}
         
-        ordered_children_nodes_ascending = self._expand(adversary, node, action_preconditions, resource_weights, adversary)
+        ordered_children_nodes_ascending = self._expand(agent_country, node, action_preconditions, resource_weights, adversary, maximizer=False)
 
         # This is the code that flips the list so that it can be ascending from left to right.
         # for example, the _expand function produces a PriorityQueue of a descending list (i.e. [5, 4, 3, 2, 1])
@@ -119,7 +120,7 @@ class AlphaBetaSearch(SearchStrategy):
         alpha = -np.inf
         beta = np.inf
         
-        ordered_children_nodes_descending = self._expand(agent_country, root_node, action_preconditions, resource_weights, adversary)
+        ordered_children_nodes_descending = self._expand(agent_country, root_node, action_preconditions, resource_weights, adversary, maximizer=True)
         
         for node in ordered_children_nodes_descending.queue:
             best_child_node = self.min_value(node, 
